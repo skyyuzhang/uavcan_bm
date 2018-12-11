@@ -1,0 +1,1169 @@
+ARM GAS  /tmp/cc8ciCJN.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"adc.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.MX_ADC1_Init,"ax",%progbits
+  16              		.align	1
+  17              		.global	MX_ADC1_Init
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	MX_ADC1_Init:
+  24              	.LFB66:
+  25              		.file 1 "Src/adc.c"
+   1:Src/adc.c     **** /**
+   2:Src/adc.c     ****   ******************************************************************************
+   3:Src/adc.c     ****   * File Name          : ADC.c
+   4:Src/adc.c     ****   * Description        : This file provides code for the configuration
+   5:Src/adc.c     ****   *                      of the ADC instances.
+   6:Src/adc.c     ****   ******************************************************************************
+   7:Src/adc.c     ****   * This notice applies to any and all portions of this file
+   8:Src/adc.c     ****   * that are not between comment pairs USER CODE BEGIN and
+   9:Src/adc.c     ****   * USER CODE END. Other portions of this file, whether 
+  10:Src/adc.c     ****   * inserted by the user or by software development tools
+  11:Src/adc.c     ****   * are owned by their respective copyright owners.
+  12:Src/adc.c     ****   *
+  13:Src/adc.c     ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  14:Src/adc.c     ****   * All rights reserved.
+  15:Src/adc.c     ****   *
+  16:Src/adc.c     ****   * Redistribution and use in source and binary forms, with or without 
+  17:Src/adc.c     ****   * modification, are permitted, provided that the following conditions are met:
+  18:Src/adc.c     ****   *
+  19:Src/adc.c     ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:Src/adc.c     ****   *    this list of conditions and the following disclaimer.
+  21:Src/adc.c     ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  22:Src/adc.c     ****   *    this list of conditions and the following disclaimer in the documentation
+  23:Src/adc.c     ****   *    and/or other materials provided with the distribution.
+  24:Src/adc.c     ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:Src/adc.c     ****   *    contributors to this software may be used to endorse or promote products 
+  26:Src/adc.c     ****   *    derived from this software without specific written permission.
+  27:Src/adc.c     ****   * 4. This software, including modifications and/or derivative works of this 
+  28:Src/adc.c     ****   *    software, must execute solely and exclusively on microcontroller or
+  29:Src/adc.c     ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  30:Src/adc.c     ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:Src/adc.c     ****   *    this license is void and will automatically terminate your rights under 
+  32:Src/adc.c     ****   *    this license. 
+  33:Src/adc.c     ****   *
+ARM GAS  /tmp/cc8ciCJN.s 			page 2
+
+
+  34:Src/adc.c     ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:Src/adc.c     ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:Src/adc.c     ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:Src/adc.c     ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:Src/adc.c     ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:Src/adc.c     ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:Src/adc.c     ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:Src/adc.c     ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:Src/adc.c     ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:Src/adc.c     ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:Src/adc.c     ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:Src/adc.c     ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:Src/adc.c     ****   *
+  47:Src/adc.c     ****   ******************************************************************************
+  48:Src/adc.c     ****   */
+  49:Src/adc.c     **** 
+  50:Src/adc.c     **** /* Includes ------------------------------------------------------------------*/
+  51:Src/adc.c     **** #include <stdint.h>
+  52:Src/adc.c     **** #include "adc.h"
+  53:Src/adc.c     **** #include "gpio.h"
+  54:Src/adc.c     **** 
+  55:Src/adc.c     **** /* USER CODE BEGIN 0 */
+  56:Src/adc.c     **** 
+  57:Src/adc.c     **** /* USER CODE END 0 */
+  58:Src/adc.c     **** 
+  59:Src/adc.c     **** ADC_HandleTypeDef hadc1;
+  60:Src/adc.c     **** ADC_ChannelConfTypeDef sConfig;
+  61:Src/adc.c     **** 
+  62:Src/adc.c     **** /* ADC1 init function */
+  63:Src/adc.c     **** void MX_ADC1_Init(void)
+  64:Src/adc.c     **** {
+  26              		.loc 1 64 0
+  27              		.cfi_startproc
+  28              		@ args = 0, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30 0000 08B5     		push	{r3, lr}
+  31              	.LCFI0:
+  32              		.cfi_def_cfa_offset 8
+  33              		.cfi_offset 3, -8
+  34              		.cfi_offset 14, -4
+  65:Src/adc.c     ****  
+  66:Src/adc.c     ****   hadc1.Instance = ADC1;
+  35              		.loc 1 66 0
+  36 0002 0D48     		ldr	r0, .L5
+  37 0004 0D4B     		ldr	r3, .L5+4
+  38 0006 0360     		str	r3, [r0]
+  67:Src/adc.c     ****   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
+  39              		.loc 1 67 0
+  40 0008 4FF48073 		mov	r3, #256
+  41 000c 8360     		str	r3, [r0, #8]
+  68:Src/adc.c     ****   hadc1.Init.ContinuousConvMode = DISABLE;
+  42              		.loc 1 68 0
+  43 000e 0023     		movs	r3, #0
+  44 0010 C360     		str	r3, [r0, #12]
+  69:Src/adc.c     ****   hadc1.Init.DiscontinuousConvMode = ENABLE;
+  45              		.loc 1 69 0
+  46 0012 0122     		movs	r2, #1
+ARM GAS  /tmp/cc8ciCJN.s 			page 3
+
+
+  47 0014 4261     		str	r2, [r0, #20]
+  70:Src/adc.c     ****   hadc1.Init.NbrOfDiscConversion = 1;
+  48              		.loc 1 70 0
+  49 0016 8261     		str	r2, [r0, #24]
+  71:Src/adc.c     ****   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  50              		.loc 1 71 0
+  51 0018 4FF46022 		mov	r2, #917504
+  52 001c C261     		str	r2, [r0, #28]
+  72:Src/adc.c     ****   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  53              		.loc 1 72 0
+  54 001e 4360     		str	r3, [r0, #4]
+  73:Src/adc.c     ****   hadc1.Init.NbrOfConversion = 16;
+  55              		.loc 1 73 0
+  56 0020 1023     		movs	r3, #16
+  57 0022 0361     		str	r3, [r0, #16]
+  74:Src/adc.c     ****   if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  58              		.loc 1 74 0
+  59 0024 FFF7FEFF 		bl	HAL_ADC_Init
+  60              	.LVL0:
+  61 0028 00B9     		cbnz	r0, .L4
+  62              	.L1:
+  75:Src/adc.c     ****   {
+  76:Src/adc.c     ****     _Error_Handler(__FILE__, __LINE__);
+  77:Src/adc.c     ****   }
+  78:Src/adc.c     **** 
+  79:Src/adc.c     **** }
+  63              		.loc 1 79 0
+  64 002a 08BD     		pop	{r3, pc}
+  65              	.L4:
+  76:Src/adc.c     ****   }
+  66              		.loc 1 76 0
+  67 002c 4C21     		movs	r1, #76
+  68 002e 0448     		ldr	r0, .L5+8
+  69 0030 FFF7FEFF 		bl	_Error_Handler
+  70              	.LVL1:
+  71              		.loc 1 79 0
+  72 0034 F9E7     		b	.L1
+  73              	.L6:
+  74 0036 00BF     		.align	2
+  75              	.L5:
+  76 0038 00000000 		.word	hadc1
+  77 003c 00240140 		.word	1073816576
+  78 0040 00000000 		.word	.LC0
+  79              		.cfi_endproc
+  80              	.LFE66:
+  82              		.section	.text.HAL_ADC_MspInit,"ax",%progbits
+  83              		.align	1
+  84              		.global	HAL_ADC_MspInit
+  85              		.syntax unified
+  86              		.thumb
+  87              		.thumb_func
+  88              		.fpu softvfp
+  90              	HAL_ADC_MspInit:
+  91              	.LFB67:
+  80:Src/adc.c     **** 
+  81:Src/adc.c     **** void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
+  82:Src/adc.c     **** {
+ARM GAS  /tmp/cc8ciCJN.s 			page 4
+
+
+  92              		.loc 1 82 0
+  93              		.cfi_startproc
+  94              		@ args = 0, pretend = 0, frame = 24
+  95              		@ frame_needed = 0, uses_anonymous_args = 0
+  96              	.LVL2:
+  83:Src/adc.c     **** 
+  84:Src/adc.c     ****   GPIO_InitTypeDef GPIO_InitStruct;
+  85:Src/adc.c     ****   if(adcHandle->Instance==ADC1)
+  97              		.loc 1 85 0
+  98 0000 0268     		ldr	r2, [r0]
+  99 0002 0E4B     		ldr	r3, .L14
+ 100 0004 9A42     		cmp	r2, r3
+ 101 0006 00D0     		beq	.L13
+ 102 0008 7047     		bx	lr
+ 103              	.L13:
+  82:Src/adc.c     **** 
+ 104              		.loc 1 82 0
+ 105 000a 00B5     		push	{lr}
+ 106              	.LCFI1:
+ 107              		.cfi_def_cfa_offset 4
+ 108              		.cfi_offset 14, -4
+ 109 000c 87B0     		sub	sp, sp, #28
+ 110              	.LCFI2:
+ 111              		.cfi_def_cfa_offset 32
+ 112              	.LBB2:
+  86:Src/adc.c     ****   {
+  87:Src/adc.c     ****   /* USER CODE BEGIN ADC1_MspInit 0 */
+  88:Src/adc.c     **** 
+  89:Src/adc.c     ****   /* USER CODE END ADC1_MspInit 0 */
+  90:Src/adc.c     ****     /* ADC1 clock enable */
+  91:Src/adc.c     ****     __HAL_RCC_ADC1_CLK_ENABLE();
+ 113              		.loc 1 91 0
+ 114 000e 03F56C43 		add	r3, r3, #60416
+ 115 0012 9A69     		ldr	r2, [r3, #24]
+ 116 0014 42F40072 		orr	r2, r2, #512
+ 117 0018 9A61     		str	r2, [r3, #24]
+ 118 001a 9B69     		ldr	r3, [r3, #24]
+ 119 001c 03F40073 		and	r3, r3, #512
+ 120 0020 0193     		str	r3, [sp, #4]
+ 121 0022 019B     		ldr	r3, [sp, #4]
+ 122              	.LBE2:
+  92:Src/adc.c     ****   
+  93:Src/adc.c     ****     /**ADC1 GPIO Configuration    
+  94:Src/adc.c     ****     PA1     ------> ADC1_IN1
+  95:Src/adc.c     ****     PA2     ------> ADC1_IN2
+  96:Src/adc.c     ****     PA3     ------> ADC1_IN3 
+  97:Src/adc.c     ****     */
+  98:Src/adc.c     ****     GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3;
+ 123              		.loc 1 98 0
+ 124 0024 0E23     		movs	r3, #14
+ 125 0026 0293     		str	r3, [sp, #8]
+  99:Src/adc.c     ****     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+ 126              		.loc 1 99 0
+ 127 0028 0323     		movs	r3, #3
+ 128 002a 0393     		str	r3, [sp, #12]
+ 100:Src/adc.c     ****     HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+ 129              		.loc 1 100 0
+ARM GAS  /tmp/cc8ciCJN.s 			page 5
+
+
+ 130 002c 02A9     		add	r1, sp, #8
+ 131 002e 0448     		ldr	r0, .L14+4
+ 132              	.LVL3:
+ 133 0030 FFF7FEFF 		bl	HAL_GPIO_Init
+ 134              	.LVL4:
+ 101:Src/adc.c     **** 
+ 102:Src/adc.c     ****   /* USER CODE BEGIN ADC1_MspInit 1 */
+ 103:Src/adc.c     **** 
+ 104:Src/adc.c     ****   /* USER CODE END ADC1_MspInit 1 */
+ 105:Src/adc.c     ****   }
+ 106:Src/adc.c     **** }
+ 135              		.loc 1 106 0
+ 136 0034 07B0     		add	sp, sp, #28
+ 137              	.LCFI3:
+ 138              		.cfi_def_cfa_offset 4
+ 139              		@ sp needed
+ 140 0036 5DF804FB 		ldr	pc, [sp], #4
+ 141              	.L15:
+ 142 003a 00BF     		.align	2
+ 143              	.L14:
+ 144 003c 00240140 		.word	1073816576
+ 145 0040 00080140 		.word	1073809408
+ 146              		.cfi_endproc
+ 147              	.LFE67:
+ 149              		.section	.text.HAL_ADC_MspDeInit,"ax",%progbits
+ 150              		.align	1
+ 151              		.global	HAL_ADC_MspDeInit
+ 152              		.syntax unified
+ 153              		.thumb
+ 154              		.thumb_func
+ 155              		.fpu softvfp
+ 157              	HAL_ADC_MspDeInit:
+ 158              	.LFB68:
+ 107:Src/adc.c     **** 
+ 108:Src/adc.c     **** void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
+ 109:Src/adc.c     **** {
+ 159              		.loc 1 109 0
+ 160              		.cfi_startproc
+ 161              		@ args = 0, pretend = 0, frame = 0
+ 162              		@ frame_needed = 0, uses_anonymous_args = 0
+ 163              	.LVL5:
+ 164 0000 08B5     		push	{r3, lr}
+ 165              	.LCFI4:
+ 166              		.cfi_def_cfa_offset 8
+ 167              		.cfi_offset 3, -8
+ 168              		.cfi_offset 14, -4
+ 110:Src/adc.c     **** 
+ 111:Src/adc.c     ****   if(adcHandle->Instance==ADC1)
+ 169              		.loc 1 111 0
+ 170 0002 0268     		ldr	r2, [r0]
+ 171 0004 064B     		ldr	r3, .L20
+ 172 0006 9A42     		cmp	r2, r3
+ 173 0008 00D0     		beq	.L19
+ 174              	.LVL6:
+ 175              	.L16:
+ 112:Src/adc.c     ****   {
+ 113:Src/adc.c     ****   /* USER CODE BEGIN ADC1_MspDeInit 0 */
+ARM GAS  /tmp/cc8ciCJN.s 			page 6
+
+
+ 114:Src/adc.c     **** 
+ 115:Src/adc.c     ****   /* USER CODE END ADC1_MspDeInit 0 */
+ 116:Src/adc.c     ****     /* Peripheral clock disable */
+ 117:Src/adc.c     ****     __HAL_RCC_ADC1_CLK_DISABLE();
+ 118:Src/adc.c     ****   
+ 119:Src/adc.c     ****     /**ADC1 GPIO Configuration    
+ 120:Src/adc.c     ****     PA1     ------> ADC1_IN1
+ 121:Src/adc.c     ****     PA2     ------> ADC1_IN2
+ 122:Src/adc.c     ****     PA3     ------> ADC1_IN3 
+ 123:Src/adc.c     ****     */
+ 124:Src/adc.c     ****     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3);
+ 125:Src/adc.c     **** 
+ 126:Src/adc.c     ****   /* USER CODE BEGIN ADC1_MspDeInit 1 */
+ 127:Src/adc.c     **** 
+ 128:Src/adc.c     ****   /* USER CODE END ADC1_MspDeInit 1 */
+ 129:Src/adc.c     ****   }
+ 130:Src/adc.c     **** } 
+ 176              		.loc 1 130 0
+ 177 000a 08BD     		pop	{r3, pc}
+ 178              	.LVL7:
+ 179              	.L19:
+ 117:Src/adc.c     ****   
+ 180              		.loc 1 117 0
+ 181 000c 054A     		ldr	r2, .L20+4
+ 182 000e 9369     		ldr	r3, [r2, #24]
+ 183 0010 23F40073 		bic	r3, r3, #512
+ 184 0014 9361     		str	r3, [r2, #24]
+ 124:Src/adc.c     **** 
+ 185              		.loc 1 124 0
+ 186 0016 0E21     		movs	r1, #14
+ 187 0018 0348     		ldr	r0, .L20+8
+ 188              	.LVL8:
+ 189 001a FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 190              	.LVL9:
+ 191              		.loc 1 130 0
+ 192 001e F4E7     		b	.L16
+ 193              	.L21:
+ 194              		.align	2
+ 195              	.L20:
+ 196 0020 00240140 		.word	1073816576
+ 197 0024 00100240 		.word	1073876992
+ 198 0028 00080140 		.word	1073809408
+ 199              		.cfi_endproc
+ 200              	.LFE68:
+ 202              		.section	.text.getAdcVaule,"ax",%progbits
+ 203              		.align	1
+ 204              		.global	getAdcVaule
+ 205              		.syntax unified
+ 206              		.thumb
+ 207              		.thumb_func
+ 208              		.fpu softvfp
+ 210              	getAdcVaule:
+ 211              	.LFB69:
+ 131:Src/adc.c     **** 
+ 132:Src/adc.c     **** /*this function can get any channel which you wanted  */
+ 133:Src/adc.c     **** int getAdcVaule(int adcChannel)
+ 134:Src/adc.c     **** {
+ARM GAS  /tmp/cc8ciCJN.s 			page 7
+
+
+ 212              		.loc 1 134 0
+ 213              		.cfi_startproc
+ 214              		@ args = 0, pretend = 0, frame = 0
+ 215              		@ frame_needed = 0, uses_anonymous_args = 0
+ 216              	.LVL10:
+ 217 0000 38B5     		push	{r3, r4, r5, lr}
+ 218              	.LCFI5:
+ 219              		.cfi_def_cfa_offset 16
+ 220              		.cfi_offset 3, -16
+ 221              		.cfi_offset 4, -12
+ 222              		.cfi_offset 5, -8
+ 223              		.cfi_offset 14, -4
+ 135:Src/adc.c     ****   uint16_t adcVaule;
+ 136:Src/adc.c     ****   switch (adcChannel)
+ 224              		.loc 1 136 0
+ 225 0002 0F28     		cmp	r0, #15
+ 226 0004 1CD8     		bhi	.L23
+ 227 0006 DFE810F0 		tbh	[pc, r0, lsl #1]
+ 228              	.L25:
+ 229 000a 1000     		.2byte	(.L24-.L25)/2
+ 230 000c 3200     		.2byte	(.L26-.L25)/2
+ 231 000e 4200     		.2byte	(.L27-.L25)/2
+ 232 0010 5300     		.2byte	(.L28-.L25)/2
+ 233 0012 6400     		.2byte	(.L29-.L25)/2
+ 234 0014 7500     		.2byte	(.L30-.L25)/2
+ 235 0016 8500     		.2byte	(.L31-.L25)/2
+ 236 0018 9600     		.2byte	(.L32-.L25)/2
+ 237 001a A800     		.2byte	(.L33-.L25)/2
+ 238 001c BA00     		.2byte	(.L34-.L25)/2
+ 239 001e CC00     		.2byte	(.L35-.L25)/2
+ 240 0020 DE00     		.2byte	(.L36-.L25)/2
+ 241 0022 F000     		.2byte	(.L37-.L25)/2
+ 242 0024 0301     		.2byte	(.L38-.L25)/2
+ 243 0026 1601     		.2byte	(.L39-.L25)/2
+ 244 0028 2901     		.2byte	(.L40-.L25)/2
+ 245              		.p2align 1
+ 246              	.L24:
+ 137:Src/adc.c     ****   {
+ 138:Src/adc.c     ****     case 0:
+ 139:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_0;
+ 247              		.loc 1 139 0
+ 248 002a 9649     		ldr	r1, .L43
+ 249 002c 0023     		movs	r3, #0
+ 250 002e 0B60     		str	r3, [r1]
+ 140:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 251              		.loc 1 140 0
+ 252 0030 0123     		movs	r3, #1
+ 253 0032 4B60     		str	r3, [r1, #4]
+ 141:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 254              		.loc 1 141 0
+ 255 0034 0523     		movs	r3, #5
+ 256 0036 8B60     		str	r3, [r1, #8]
+ 142:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 257              		.loc 1 142 0
+ 258 0038 9348     		ldr	r0, .L43+4
+ 259              	.LVL11:
+ 260 003a FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ARM GAS  /tmp/cc8ciCJN.s 			page 8
+
+
+ 261              	.LVL12:
+ 262 003e 88B9     		cbnz	r0, .L42
+ 263              	.L23:
+ 143:Src/adc.c     ****         {
+ 144:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 145:Src/adc.c     ****         }
+ 146:Src/adc.c     ****         break;
+ 147:Src/adc.c     **** 
+ 148:Src/adc.c     ****     case 1:
+ 149:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_1;
+ 150:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 151:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 152:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 153:Src/adc.c     ****         {
+ 154:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 155:Src/adc.c     ****         }
+ 156:Src/adc.c     ****         break;
+ 157:Src/adc.c     **** 
+ 158:Src/adc.c     ****     case 2:
+ 159:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_2;
+ 160:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 161:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 162:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 163:Src/adc.c     ****         {
+ 164:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 165:Src/adc.c     ****         }
+ 166:Src/adc.c     ****         break;
+ 167:Src/adc.c     **** 
+ 168:Src/adc.c     ****     case 3:
+ 169:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_3;
+ 170:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 171:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 172:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 173:Src/adc.c     ****         {
+ 174:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 175:Src/adc.c     ****         }
+ 176:Src/adc.c     ****         break;
+ 177:Src/adc.c     **** 
+ 178:Src/adc.c     ****     case 4:
+ 179:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_4;
+ 180:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 181:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 182:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 183:Src/adc.c     ****         {
+ 184:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 185:Src/adc.c     ****         }
+ 186:Src/adc.c     ****         break;
+ 187:Src/adc.c     **** 
+ 188:Src/adc.c     ****     case 5:
+ 189:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_5;
+ 190:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 191:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 192:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 193:Src/adc.c     ****         {
+ 194:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 195:Src/adc.c     ****         }
+ 196:Src/adc.c     ****         break;
+ARM GAS  /tmp/cc8ciCJN.s 			page 9
+
+
+ 197:Src/adc.c     **** 
+ 198:Src/adc.c     ****     case 6:
+ 199:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_6;
+ 200:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 201:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 202:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 203:Src/adc.c     ****         {
+ 204:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 205:Src/adc.c     ****         }
+ 206:Src/adc.c     ****         break;
+ 207:Src/adc.c     **** 
+ 208:Src/adc.c     ****     case 7:
+ 209:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_7;
+ 210:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 211:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 212:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 213:Src/adc.c     ****         {
+ 214:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 215:Src/adc.c     ****         }
+ 216:Src/adc.c     ****         break;
+ 217:Src/adc.c     **** 
+ 218:Src/adc.c     ****     case 8:
+ 219:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_8;
+ 220:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 221:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 222:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 223:Src/adc.c     ****         {
+ 224:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 225:Src/adc.c     ****         }
+ 226:Src/adc.c     ****         break;
+ 227:Src/adc.c     **** 
+ 228:Src/adc.c     ****     case 9:
+ 229:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_9;
+ 230:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 231:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 232:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 233:Src/adc.c     ****         {
+ 234:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 235:Src/adc.c     ****         }
+ 236:Src/adc.c     ****         break;
+ 237:Src/adc.c     **** 
+ 238:Src/adc.c     ****     case 10:
+ 239:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_10;
+ 240:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 241:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 242:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 243:Src/adc.c     ****         {
+ 244:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 245:Src/adc.c     ****         }
+ 246:Src/adc.c     ****         break;
+ 247:Src/adc.c     **** 
+ 248:Src/adc.c     ****     case 11:
+ 249:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_11;
+ 250:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 251:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 252:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 253:Src/adc.c     ****         {
+ARM GAS  /tmp/cc8ciCJN.s 			page 10
+
+
+ 254:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 255:Src/adc.c     ****         }
+ 256:Src/adc.c     ****         break;
+ 257:Src/adc.c     **** 
+ 258:Src/adc.c     ****     case 12:
+ 259:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_12;
+ 260:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 261:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 262:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 263:Src/adc.c     ****         {
+ 264:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 265:Src/adc.c     ****         }
+ 266:Src/adc.c     ****         break;
+ 267:Src/adc.c     **** 
+ 268:Src/adc.c     ****     case 13:
+ 269:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_13;
+ 270:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 271:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 272:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 273:Src/adc.c     ****         {
+ 274:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 275:Src/adc.c     ****         }
+ 276:Src/adc.c     ****         break;
+ 277:Src/adc.c     **** 
+ 278:Src/adc.c     ****     case 14:
+ 279:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_14;
+ 280:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 281:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 282:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 283:Src/adc.c     ****         {
+ 284:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 285:Src/adc.c     ****         }
+ 286:Src/adc.c     ****         break;
+ 287:Src/adc.c     **** 
+ 288:Src/adc.c     ****     case 15:
+ 289:Src/adc.c     ****         sConfig.Channel = ADC_CHANNEL_15;
+ 290:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 291:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 292:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 293:Src/adc.c     ****         {
+ 294:Src/adc.c     ****           _Error_Handler(__FILE__, __LINE__);
+ 295:Src/adc.c     ****         }
+ 296:Src/adc.c     ****         break;
+ 297:Src/adc.c     ****         
+ 298:Src/adc.c     ****     break;
+ 299:Src/adc.c     ****   }
+ 300:Src/adc.c     ****   HAL_ADC_Start(&hadc1);
+ 264              		.loc 1 300 0
+ 265 0040 914C     		ldr	r4, .L43+4
+ 266 0042 2046     		mov	r0, r4
+ 267 0044 FFF7FEFF 		bl	HAL_ADC_Start
+ 268              	.LVL13:
+ 301:Src/adc.c     ****   HAL_ADC_PollForConversion(&hadc1,0xffff);
+ 269              		.loc 1 301 0
+ 270 0048 4FF6FF71 		movw	r1, #65535
+ 271 004c 2046     		mov	r0, r4
+ 272 004e FFF7FEFF 		bl	HAL_ADC_PollForConversion
+ARM GAS  /tmp/cc8ciCJN.s 			page 11
+
+
+ 273              	.LVL14:
+ 302:Src/adc.c     ****   adcVaule=HAL_ADC_GetValue(&hadc1);
+ 274              		.loc 1 302 0
+ 275 0052 2046     		mov	r0, r4
+ 276 0054 FFF7FEFF 		bl	HAL_ADC_GetValue
+ 277              	.LVL15:
+ 278 0058 0546     		mov	r5, r0
+ 279              	.LVL16:
+ 303:Src/adc.c     ****   HAL_ADC_Stop(&hadc1);
+ 280              		.loc 1 303 0
+ 281 005a 2046     		mov	r0, r4
+ 282 005c FFF7FEFF 		bl	HAL_ADC_Stop
+ 283              	.LVL17:
+ 304:Src/adc.c     ****   return adcVaule;
+ 305:Src/adc.c     ****   
+ 306:Src/adc.c     **** }
+ 284              		.loc 1 306 0
+ 285 0060 A8B2     		uxth	r0, r5
+ 286 0062 38BD     		pop	{r3, r4, r5, pc}
+ 287              	.LVL18:
+ 288              	.L42:
+ 144:Src/adc.c     ****         }
+ 289              		.loc 1 144 0
+ 290 0064 9021     		movs	r1, #144
+ 291 0066 8948     		ldr	r0, .L43+8
+ 292 0068 FFF7FEFF 		bl	_Error_Handler
+ 293              	.LVL19:
+ 294 006c E8E7     		b	.L23
+ 295              	.LVL20:
+ 296              	.L26:
+ 149:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 297              		.loc 1 149 0
+ 298 006e 8549     		ldr	r1, .L43
+ 299 0070 0123     		movs	r3, #1
+ 300 0072 0B60     		str	r3, [r1]
+ 150:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 301              		.loc 1 150 0
+ 302 0074 4B60     		str	r3, [r1, #4]
+ 151:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 303              		.loc 1 151 0
+ 304 0076 0523     		movs	r3, #5
+ 305 0078 8B60     		str	r3, [r1, #8]
+ 152:Src/adc.c     ****         {
+ 306              		.loc 1 152 0
+ 307 007a 8348     		ldr	r0, .L43+4
+ 308              	.LVL21:
+ 309 007c FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 310              	.LVL22:
+ 311 0080 0028     		cmp	r0, #0
+ 312 0082 DDD0     		beq	.L23
+ 154:Src/adc.c     ****         }
+ 313              		.loc 1 154 0
+ 314 0084 9A21     		movs	r1, #154
+ 315 0086 8148     		ldr	r0, .L43+8
+ 316 0088 FFF7FEFF 		bl	_Error_Handler
+ 317              	.LVL23:
+ 318 008c D8E7     		b	.L23
+ARM GAS  /tmp/cc8ciCJN.s 			page 12
+
+
+ 319              	.LVL24:
+ 320              	.L27:
+ 159:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 321              		.loc 1 159 0
+ 322 008e 7D49     		ldr	r1, .L43
+ 323 0090 0223     		movs	r3, #2
+ 324 0092 0B60     		str	r3, [r1]
+ 160:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 325              		.loc 1 160 0
+ 326 0094 0123     		movs	r3, #1
+ 327 0096 4B60     		str	r3, [r1, #4]
+ 161:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 328              		.loc 1 161 0
+ 329 0098 0523     		movs	r3, #5
+ 330 009a 8B60     		str	r3, [r1, #8]
+ 162:Src/adc.c     ****         {
+ 331              		.loc 1 162 0
+ 332 009c 7A48     		ldr	r0, .L43+4
+ 333              	.LVL25:
+ 334 009e FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 335              	.LVL26:
+ 336 00a2 0028     		cmp	r0, #0
+ 337 00a4 CCD0     		beq	.L23
+ 164:Src/adc.c     ****         }
+ 338              		.loc 1 164 0
+ 339 00a6 A421     		movs	r1, #164
+ 340 00a8 7848     		ldr	r0, .L43+8
+ 341 00aa FFF7FEFF 		bl	_Error_Handler
+ 342              	.LVL27:
+ 343 00ae C7E7     		b	.L23
+ 344              	.LVL28:
+ 345              	.L28:
+ 169:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 346              		.loc 1 169 0
+ 347 00b0 7449     		ldr	r1, .L43
+ 348 00b2 0323     		movs	r3, #3
+ 349 00b4 0B60     		str	r3, [r1]
+ 170:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 350              		.loc 1 170 0
+ 351 00b6 0123     		movs	r3, #1
+ 352 00b8 4B60     		str	r3, [r1, #4]
+ 171:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 353              		.loc 1 171 0
+ 354 00ba 0523     		movs	r3, #5
+ 355 00bc 8B60     		str	r3, [r1, #8]
+ 172:Src/adc.c     ****         {
+ 356              		.loc 1 172 0
+ 357 00be 7248     		ldr	r0, .L43+4
+ 358              	.LVL29:
+ 359 00c0 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 360              	.LVL30:
+ 361 00c4 0028     		cmp	r0, #0
+ 362 00c6 BBD0     		beq	.L23
+ 174:Src/adc.c     ****         }
+ 363              		.loc 1 174 0
+ 364 00c8 AE21     		movs	r1, #174
+ 365 00ca 7048     		ldr	r0, .L43+8
+ARM GAS  /tmp/cc8ciCJN.s 			page 13
+
+
+ 366 00cc FFF7FEFF 		bl	_Error_Handler
+ 367              	.LVL31:
+ 368 00d0 B6E7     		b	.L23
+ 369              	.LVL32:
+ 370              	.L29:
+ 179:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 371              		.loc 1 179 0
+ 372 00d2 6C49     		ldr	r1, .L43
+ 373 00d4 0423     		movs	r3, #4
+ 374 00d6 0B60     		str	r3, [r1]
+ 180:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 375              		.loc 1 180 0
+ 376 00d8 0123     		movs	r3, #1
+ 377 00da 4B60     		str	r3, [r1, #4]
+ 181:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 378              		.loc 1 181 0
+ 379 00dc 0523     		movs	r3, #5
+ 380 00de 8B60     		str	r3, [r1, #8]
+ 182:Src/adc.c     ****         {
+ 381              		.loc 1 182 0
+ 382 00e0 6948     		ldr	r0, .L43+4
+ 383              	.LVL33:
+ 384 00e2 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 385              	.LVL34:
+ 386 00e6 0028     		cmp	r0, #0
+ 387 00e8 AAD0     		beq	.L23
+ 184:Src/adc.c     ****         }
+ 388              		.loc 1 184 0
+ 389 00ea B821     		movs	r1, #184
+ 390 00ec 6748     		ldr	r0, .L43+8
+ 391 00ee FFF7FEFF 		bl	_Error_Handler
+ 392              	.LVL35:
+ 393 00f2 A5E7     		b	.L23
+ 394              	.LVL36:
+ 395              	.L30:
+ 189:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 396              		.loc 1 189 0
+ 397 00f4 6349     		ldr	r1, .L43
+ 398 00f6 0523     		movs	r3, #5
+ 399 00f8 0B60     		str	r3, [r1]
+ 190:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 400              		.loc 1 190 0
+ 401 00fa 0122     		movs	r2, #1
+ 402 00fc 4A60     		str	r2, [r1, #4]
+ 191:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 403              		.loc 1 191 0
+ 404 00fe 8B60     		str	r3, [r1, #8]
+ 192:Src/adc.c     ****         {
+ 405              		.loc 1 192 0
+ 406 0100 6148     		ldr	r0, .L43+4
+ 407              	.LVL37:
+ 408 0102 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 409              	.LVL38:
+ 410 0106 0028     		cmp	r0, #0
+ 411 0108 9AD0     		beq	.L23
+ 194:Src/adc.c     ****         }
+ 412              		.loc 1 194 0
+ARM GAS  /tmp/cc8ciCJN.s 			page 14
+
+
+ 413 010a C221     		movs	r1, #194
+ 414 010c 5F48     		ldr	r0, .L43+8
+ 415 010e FFF7FEFF 		bl	_Error_Handler
+ 416              	.LVL39:
+ 417 0112 95E7     		b	.L23
+ 418              	.LVL40:
+ 419              	.L31:
+ 199:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 420              		.loc 1 199 0
+ 421 0114 5B49     		ldr	r1, .L43
+ 422 0116 0623     		movs	r3, #6
+ 423 0118 0B60     		str	r3, [r1]
+ 200:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 424              		.loc 1 200 0
+ 425 011a 0123     		movs	r3, #1
+ 426 011c 4B60     		str	r3, [r1, #4]
+ 201:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 427              		.loc 1 201 0
+ 428 011e 0523     		movs	r3, #5
+ 429 0120 8B60     		str	r3, [r1, #8]
+ 202:Src/adc.c     ****         {
+ 430              		.loc 1 202 0
+ 431 0122 5948     		ldr	r0, .L43+4
+ 432              	.LVL41:
+ 433 0124 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 434              	.LVL42:
+ 435 0128 0028     		cmp	r0, #0
+ 436 012a 89D0     		beq	.L23
+ 204:Src/adc.c     ****         }
+ 437              		.loc 1 204 0
+ 438 012c CC21     		movs	r1, #204
+ 439 012e 5748     		ldr	r0, .L43+8
+ 440 0130 FFF7FEFF 		bl	_Error_Handler
+ 441              	.LVL43:
+ 442 0134 84E7     		b	.L23
+ 443              	.LVL44:
+ 444              	.L32:
+ 209:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 445              		.loc 1 209 0
+ 446 0136 5349     		ldr	r1, .L43
+ 447 0138 0723     		movs	r3, #7
+ 448 013a 0B60     		str	r3, [r1]
+ 210:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 449              		.loc 1 210 0
+ 450 013c 0123     		movs	r3, #1
+ 451 013e 4B60     		str	r3, [r1, #4]
+ 211:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 452              		.loc 1 211 0
+ 453 0140 0523     		movs	r3, #5
+ 454 0142 8B60     		str	r3, [r1, #8]
+ 212:Src/adc.c     ****         {
+ 455              		.loc 1 212 0
+ 456 0144 5048     		ldr	r0, .L43+4
+ 457              	.LVL45:
+ 458 0146 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 459              	.LVL46:
+ 460 014a 0028     		cmp	r0, #0
+ARM GAS  /tmp/cc8ciCJN.s 			page 15
+
+
+ 461 014c 3FF478AF 		beq	.L23
+ 214:Src/adc.c     ****         }
+ 462              		.loc 1 214 0
+ 463 0150 D621     		movs	r1, #214
+ 464 0152 4E48     		ldr	r0, .L43+8
+ 465 0154 FFF7FEFF 		bl	_Error_Handler
+ 466              	.LVL47:
+ 467 0158 72E7     		b	.L23
+ 468              	.LVL48:
+ 469              	.L33:
+ 219:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 470              		.loc 1 219 0
+ 471 015a 4A49     		ldr	r1, .L43
+ 472 015c 0823     		movs	r3, #8
+ 473 015e 0B60     		str	r3, [r1]
+ 220:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 474              		.loc 1 220 0
+ 475 0160 0123     		movs	r3, #1
+ 476 0162 4B60     		str	r3, [r1, #4]
+ 221:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 477              		.loc 1 221 0
+ 478 0164 0523     		movs	r3, #5
+ 479 0166 8B60     		str	r3, [r1, #8]
+ 222:Src/adc.c     ****         {
+ 480              		.loc 1 222 0
+ 481 0168 4748     		ldr	r0, .L43+4
+ 482              	.LVL49:
+ 483 016a FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 484              	.LVL50:
+ 485 016e 0028     		cmp	r0, #0
+ 486 0170 3FF466AF 		beq	.L23
+ 224:Src/adc.c     ****         }
+ 487              		.loc 1 224 0
+ 488 0174 E021     		movs	r1, #224
+ 489 0176 4548     		ldr	r0, .L43+8
+ 490 0178 FFF7FEFF 		bl	_Error_Handler
+ 491              	.LVL51:
+ 492 017c 60E7     		b	.L23
+ 493              	.LVL52:
+ 494              	.L34:
+ 229:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 495              		.loc 1 229 0
+ 496 017e 4149     		ldr	r1, .L43
+ 497 0180 0923     		movs	r3, #9
+ 498 0182 0B60     		str	r3, [r1]
+ 230:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 499              		.loc 1 230 0
+ 500 0184 0123     		movs	r3, #1
+ 501 0186 4B60     		str	r3, [r1, #4]
+ 231:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 502              		.loc 1 231 0
+ 503 0188 0523     		movs	r3, #5
+ 504 018a 8B60     		str	r3, [r1, #8]
+ 232:Src/adc.c     ****         {
+ 505              		.loc 1 232 0
+ 506 018c 3E48     		ldr	r0, .L43+4
+ 507              	.LVL53:
+ARM GAS  /tmp/cc8ciCJN.s 			page 16
+
+
+ 508 018e FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 509              	.LVL54:
+ 510 0192 0028     		cmp	r0, #0
+ 511 0194 3FF454AF 		beq	.L23
+ 234:Src/adc.c     ****         }
+ 512              		.loc 1 234 0
+ 513 0198 EA21     		movs	r1, #234
+ 514 019a 3C48     		ldr	r0, .L43+8
+ 515 019c FFF7FEFF 		bl	_Error_Handler
+ 516              	.LVL55:
+ 517 01a0 4EE7     		b	.L23
+ 518              	.LVL56:
+ 519              	.L35:
+ 239:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 520              		.loc 1 239 0
+ 521 01a2 3849     		ldr	r1, .L43
+ 522 01a4 0A23     		movs	r3, #10
+ 523 01a6 0B60     		str	r3, [r1]
+ 240:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 524              		.loc 1 240 0
+ 525 01a8 0123     		movs	r3, #1
+ 526 01aa 4B60     		str	r3, [r1, #4]
+ 241:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 527              		.loc 1 241 0
+ 528 01ac 0523     		movs	r3, #5
+ 529 01ae 8B60     		str	r3, [r1, #8]
+ 242:Src/adc.c     ****         {
+ 530              		.loc 1 242 0
+ 531 01b0 3548     		ldr	r0, .L43+4
+ 532              	.LVL57:
+ 533 01b2 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 534              	.LVL58:
+ 535 01b6 0028     		cmp	r0, #0
+ 536 01b8 3FF442AF 		beq	.L23
+ 244:Src/adc.c     ****         }
+ 537              		.loc 1 244 0
+ 538 01bc F421     		movs	r1, #244
+ 539 01be 3348     		ldr	r0, .L43+8
+ 540 01c0 FFF7FEFF 		bl	_Error_Handler
+ 541              	.LVL59:
+ 542 01c4 3CE7     		b	.L23
+ 543              	.LVL60:
+ 544              	.L36:
+ 249:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 545              		.loc 1 249 0
+ 546 01c6 2F49     		ldr	r1, .L43
+ 547 01c8 0B23     		movs	r3, #11
+ 548 01ca 0B60     		str	r3, [r1]
+ 250:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 549              		.loc 1 250 0
+ 550 01cc 0123     		movs	r3, #1
+ 551 01ce 4B60     		str	r3, [r1, #4]
+ 251:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 552              		.loc 1 251 0
+ 553 01d0 0523     		movs	r3, #5
+ 554 01d2 8B60     		str	r3, [r1, #8]
+ 252:Src/adc.c     ****         {
+ARM GAS  /tmp/cc8ciCJN.s 			page 17
+
+
+ 555              		.loc 1 252 0
+ 556 01d4 2C48     		ldr	r0, .L43+4
+ 557              	.LVL61:
+ 558 01d6 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 559              	.LVL62:
+ 560 01da 0028     		cmp	r0, #0
+ 561 01dc 3FF430AF 		beq	.L23
+ 254:Src/adc.c     ****         }
+ 562              		.loc 1 254 0
+ 563 01e0 FE21     		movs	r1, #254
+ 564 01e2 2A48     		ldr	r0, .L43+8
+ 565 01e4 FFF7FEFF 		bl	_Error_Handler
+ 566              	.LVL63:
+ 567 01e8 2AE7     		b	.L23
+ 568              	.LVL64:
+ 569              	.L37:
+ 259:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 570              		.loc 1 259 0
+ 571 01ea 2649     		ldr	r1, .L43
+ 572 01ec 0C23     		movs	r3, #12
+ 573 01ee 0B60     		str	r3, [r1]
+ 260:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 574              		.loc 1 260 0
+ 575 01f0 0123     		movs	r3, #1
+ 576 01f2 4B60     		str	r3, [r1, #4]
+ 261:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 577              		.loc 1 261 0
+ 578 01f4 0523     		movs	r3, #5
+ 579 01f6 8B60     		str	r3, [r1, #8]
+ 262:Src/adc.c     ****         {
+ 580              		.loc 1 262 0
+ 581 01f8 2348     		ldr	r0, .L43+4
+ 582              	.LVL65:
+ 583 01fa FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 584              	.LVL66:
+ 585 01fe 0028     		cmp	r0, #0
+ 586 0200 3FF41EAF 		beq	.L23
+ 264:Src/adc.c     ****         }
+ 587              		.loc 1 264 0
+ 588 0204 4FF48471 		mov	r1, #264
+ 589 0208 2048     		ldr	r0, .L43+8
+ 590 020a FFF7FEFF 		bl	_Error_Handler
+ 591              	.LVL67:
+ 592 020e 17E7     		b	.L23
+ 593              	.LVL68:
+ 594              	.L38:
+ 269:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 595              		.loc 1 269 0
+ 596 0210 1C49     		ldr	r1, .L43
+ 597 0212 0D23     		movs	r3, #13
+ 598 0214 0B60     		str	r3, [r1]
+ 270:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 599              		.loc 1 270 0
+ 600 0216 0123     		movs	r3, #1
+ 601 0218 4B60     		str	r3, [r1, #4]
+ 271:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 602              		.loc 1 271 0
+ARM GAS  /tmp/cc8ciCJN.s 			page 18
+
+
+ 603 021a 0523     		movs	r3, #5
+ 604 021c 8B60     		str	r3, [r1, #8]
+ 272:Src/adc.c     ****         {
+ 605              		.loc 1 272 0
+ 606 021e 1A48     		ldr	r0, .L43+4
+ 607              	.LVL69:
+ 608 0220 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 609              	.LVL70:
+ 610 0224 0028     		cmp	r0, #0
+ 611 0226 3FF40BAF 		beq	.L23
+ 274:Src/adc.c     ****         }
+ 612              		.loc 1 274 0
+ 613 022a 4FF48971 		mov	r1, #274
+ 614 022e 1748     		ldr	r0, .L43+8
+ 615 0230 FFF7FEFF 		bl	_Error_Handler
+ 616              	.LVL71:
+ 617 0234 04E7     		b	.L23
+ 618              	.LVL72:
+ 619              	.L39:
+ 279:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 620              		.loc 1 279 0
+ 621 0236 1349     		ldr	r1, .L43
+ 622 0238 0E23     		movs	r3, #14
+ 623 023a 0B60     		str	r3, [r1]
+ 280:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 624              		.loc 1 280 0
+ 625 023c 0123     		movs	r3, #1
+ 626 023e 4B60     		str	r3, [r1, #4]
+ 281:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 627              		.loc 1 281 0
+ 628 0240 0523     		movs	r3, #5
+ 629 0242 8B60     		str	r3, [r1, #8]
+ 282:Src/adc.c     ****         {
+ 630              		.loc 1 282 0
+ 631 0244 1048     		ldr	r0, .L43+4
+ 632              	.LVL73:
+ 633 0246 FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 634              	.LVL74:
+ 635 024a 0028     		cmp	r0, #0
+ 636 024c 3FF4F8AE 		beq	.L23
+ 284:Src/adc.c     ****         }
+ 637              		.loc 1 284 0
+ 638 0250 4FF48E71 		mov	r1, #284
+ 639 0254 0D48     		ldr	r0, .L43+8
+ 640 0256 FFF7FEFF 		bl	_Error_Handler
+ 641              	.LVL75:
+ 642 025a F1E6     		b	.L23
+ 643              	.LVL76:
+ 644              	.L40:
+ 289:Src/adc.c     ****         sConfig.Rank = ADC_REGULAR_RANK_1;
+ 645              		.loc 1 289 0
+ 646 025c 0949     		ldr	r1, .L43
+ 647 025e 0F23     		movs	r3, #15
+ 648 0260 0B60     		str	r3, [r1]
+ 290:Src/adc.c     ****         sConfig.SamplingTime = ADC_SAMPLETIME_55CYCLES_5;
+ 649              		.loc 1 290 0
+ 650 0262 0123     		movs	r3, #1
+ARM GAS  /tmp/cc8ciCJN.s 			page 19
+
+
+ 651 0264 4B60     		str	r3, [r1, #4]
+ 291:Src/adc.c     ****         if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+ 652              		.loc 1 291 0
+ 653 0266 0523     		movs	r3, #5
+ 654 0268 8B60     		str	r3, [r1, #8]
+ 292:Src/adc.c     ****         {
+ 655              		.loc 1 292 0
+ 656 026a 0748     		ldr	r0, .L43+4
+ 657              	.LVL77:
+ 658 026c FFF7FEFF 		bl	HAL_ADC_ConfigChannel
+ 659              	.LVL78:
+ 660 0270 0028     		cmp	r0, #0
+ 661 0272 3FF4E5AE 		beq	.L23
+ 294:Src/adc.c     ****         }
+ 662              		.loc 1 294 0
+ 663 0276 4FF49371 		mov	r1, #294
+ 664 027a 0448     		ldr	r0, .L43+8
+ 665 027c FFF7FEFF 		bl	_Error_Handler
+ 666              	.LVL79:
+ 667 0280 DEE6     		b	.L23
+ 668              	.L44:
+ 669 0282 00BF     		.align	2
+ 670              	.L43:
+ 671 0284 00000000 		.word	sConfig
+ 672 0288 00000000 		.word	hadc1
+ 673 028c 00000000 		.word	.LC0
+ 674              		.cfi_endproc
+ 675              	.LFE69:
+ 677              		.comm	sConfig,12,4
+ 678              		.comm	hadc1,48,4
+ 679              		.section	.rodata.MX_ADC1_Init.str1.4,"aMS",%progbits,1
+ 680              		.align	2
+ 681              	.LC0:
+ 682 0000 5372632F 		.ascii	"Src/adc.c\000"
+ 682      6164632E 
+ 682      6300
+ 683              		.text
+ 684              	.Letext0:
+ 685              		.file 2 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h
+ 686              		.file 3 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 687              		.file 4 "Drivers/CMSIS/Include/core_cm3.h"
+ 688              		.file 5 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 689              		.file 6 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 690              		.file 7 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 691              		.file 8 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 692              		.file 9 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 693              		.file 10 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 694              		.file 11 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f1xx.h"
+ 695              		.file 12 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 696              		.file 13 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 697              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 698              		.file 15 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_adc.h"
+ 699              		.file 16 "Inc/adc.h"
+ARM GAS  /tmp/cc8ciCJN.s 			page 20
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 adc.c
+     /tmp/cc8ciCJN.s:16     .text.MX_ADC1_Init:0000000000000000 $t
+     /tmp/cc8ciCJN.s:23     .text.MX_ADC1_Init:0000000000000000 MX_ADC1_Init
+     /tmp/cc8ciCJN.s:76     .text.MX_ADC1_Init:0000000000000038 $d
+                            *COM*:0000000000000030 hadc1
+     /tmp/cc8ciCJN.s:83     .text.HAL_ADC_MspInit:0000000000000000 $t
+     /tmp/cc8ciCJN.s:90     .text.HAL_ADC_MspInit:0000000000000000 HAL_ADC_MspInit
+     /tmp/cc8ciCJN.s:144    .text.HAL_ADC_MspInit:000000000000003c $d
+     /tmp/cc8ciCJN.s:150    .text.HAL_ADC_MspDeInit:0000000000000000 $t
+     /tmp/cc8ciCJN.s:157    .text.HAL_ADC_MspDeInit:0000000000000000 HAL_ADC_MspDeInit
+     /tmp/cc8ciCJN.s:196    .text.HAL_ADC_MspDeInit:0000000000000020 $d
+     /tmp/cc8ciCJN.s:203    .text.getAdcVaule:0000000000000000 $t
+     /tmp/cc8ciCJN.s:210    .text.getAdcVaule:0000000000000000 getAdcVaule
+     /tmp/cc8ciCJN.s:229    .text.getAdcVaule:000000000000000a $d
+     /tmp/cc8ciCJN.s:245    .text.getAdcVaule:000000000000002a $t
+     /tmp/cc8ciCJN.s:671    .text.getAdcVaule:0000000000000284 $d
+                            *COM*:000000000000000c sConfig
+     /tmp/cc8ciCJN.s:680    .rodata.MX_ADC1_Init.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_ADC_Init
+_Error_Handler
+HAL_GPIO_Init
+HAL_GPIO_DeInit
+HAL_ADC_ConfigChannel
+HAL_ADC_Start
+HAL_ADC_PollForConversion
+HAL_ADC_GetValue
+HAL_ADC_Stop

@@ -1,0 +1,2537 @@
+ARM GAS  /tmp/cc56gSUN.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"uavcan.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.shouldAcceptTransfer,"ax",%progbits
+  16              		.align	1
+  17              		.global	shouldAcceptTransfer
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	shouldAcceptTransfer:
+  24              	.LFB67:
+  25              		.file 1 "Src/uavcan.c"
+   1:Src/uavcan.c  **** #include <stdio.h>
+   2:Src/uavcan.c  **** #include <stdlib.h>
+   3:Src/uavcan.c  **** #include "canard.h"
+   4:Src/uavcan.c  **** #include "canard_stm32.h"
+   5:Src/uavcan.c  **** #include "uavcan.h"
+   6:Src/uavcan.c  **** #include "stm32f1xx_hal.h"
+   7:Src/uavcan.c  **** #include "main.h"
+   8:Src/uavcan.c  **** 
+   9:Src/uavcan.c  **** #define CANARD_SPIN_PERIOD   100
+  10:Src/uavcan.c  **** #define PUBLISHER_PERIOD_mS     200
+  11:Src/uavcan.c  ****             
+  12:Src/uavcan.c  **** static CanardInstance g_canard;                //The library instance
+  13:Src/uavcan.c  **** static uint8_t g_canard_memory_pool[1024];     //Arena for memory allocation, used by the library
+  14:Src/uavcan.c  **** static uint32_t  g_uptime = 0;
+  15:Src/uavcan.c  **** uint16_t rc_pwm[6] = {0,0,0,0,0,0};
+  16:Src/uavcan.c  **** 
+  17:Src/uavcan.c  **** 
+  18:Src/uavcan.c  **** 
+  19:Src/uavcan.c  ****  
+  20:Src/uavcan.c  **** 
+  21:Src/uavcan.c  **** //////////////////////////////////////////////////////////////////////////////////////
+  22:Src/uavcan.c  **** 
+  23:Src/uavcan.c  **** bool shouldAcceptTransfer(const CanardInstance* ins,
+  24:Src/uavcan.c  ****                           uint64_t* out_data_type_signature,
+  25:Src/uavcan.c  ****                           uint16_t data_type_id,
+  26:Src/uavcan.c  ****                           CanardTransferType transfer_type,
+  27:Src/uavcan.c  ****                           uint8_t source_node_id)
+  28:Src/uavcan.c  **** {
+  26              		.loc 1 28 0
+  27              		.cfi_startproc
+  28              		@ args = 4, pretend = 0, frame = 0
+  29              		@ frame_needed = 0, uses_anonymous_args = 0
+  30              		@ link register save eliminated.
+ARM GAS  /tmp/cc56gSUN.s 			page 2
+
+
+  31              	.LVL0:
+  29:Src/uavcan.c  ****     if ((transfer_type == CanardTransferTypeRequest) &&(data_type_id == UAVCAN_GET_NODE_INFO_DATA_T
+  32              		.loc 1 29 0
+  33 0000 012B     		cmp	r3, #1
+  34 0002 01D0     		beq	.L5
+  30:Src/uavcan.c  ****     {
+  31:Src/uavcan.c  ****         *out_data_type_signature = UAVCAN_GET_NODE_INFO_DATA_TYPE_SIGNATURE;
+  32:Src/uavcan.c  ****         return true;
+  33:Src/uavcan.c  ****     }
+  34:Src/uavcan.c  ****     return false;
+  35              		.loc 1 34 0
+  36 0004 0020     		movs	r0, #0
+  37              	.LVL1:
+  38 0006 7047     		bx	lr
+  39              	.LVL2:
+  40              	.L5:
+  29:Src/uavcan.c  ****     if ((transfer_type == CanardTransferTypeRequest) &&(data_type_id == UAVCAN_GET_NODE_INFO_DATA_T
+  41              		.loc 1 29 0 discriminator 1
+  42 0008 012A     		cmp	r2, #1
+  43 000a 01D0     		beq	.L6
+  44              		.loc 1 34 0
+  45 000c 0020     		movs	r0, #0
+  46              	.LVL3:
+  35:Src/uavcan.c  **** }
+  47              		.loc 1 35 0
+  48 000e 7047     		bx	lr
+  49              	.LVL4:
+  50              	.L6:
+  31:Src/uavcan.c  ****         return true;
+  51              		.loc 1 31 0
+  52 0010 03A3     		adr	r3, .L7
+  53 0012 D3E90023 		ldrd	r2, [r3]
+  54              	.LVL5:
+  55 0016 C1E90023 		strd	r2, [r1]
+  32:Src/uavcan.c  ****     }
+  56              		.loc 1 32 0
+  57 001a 0120     		movs	r0, #1
+  58              	.LVL6:
+  59 001c 7047     		bx	lr
+  60              	.L8:
+  61 001e 00BF     		.align	3
+  62              	.L7:
+  63 0020 9E6AC421 		.word	566520478
+  64 0024 818A46EE 		.word	-297366911
+  65              		.cfi_endproc
+  66              	.LFE67:
+  68              		.section	.text.uavcanInit,"ax",%progbits
+  69              		.align	1
+  70              		.global	uavcanInit
+  71              		.syntax unified
+  72              		.thumb
+  73              		.thumb_func
+  74              		.fpu softvfp
+  76              	uavcanInit:
+  77              	.LFB70:
+  36:Src/uavcan.c  **** 
+  37:Src/uavcan.c  **** void onTransferReceived(CanardInstance* ins, CanardRxTransfer* transfer)
+ARM GAS  /tmp/cc56gSUN.s 			page 3
+
+
+  38:Src/uavcan.c  **** {
+  39:Src/uavcan.c  ****     if ((transfer->transfer_type == CanardTransferTypeRequest) && (transfer->data_type_id == UAVCAN
+  40:Src/uavcan.c  ****     {
+  41:Src/uavcan.c  ****         getNodeInfoHandleCanard(transfer);
+  42:Src/uavcan.c  ****     } 
+  43:Src/uavcan.c  **** }
+  44:Src/uavcan.c  **** 
+  45:Src/uavcan.c  **** void getNodeInfoHandleCanard(CanardRxTransfer* transfer)
+  46:Src/uavcan.c  **** {
+  47:Src/uavcan.c  ****     uint8_t buffer[UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE];
+  48:Src/uavcan.c  ****     memset(buffer,0,UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE);
+  49:Src/uavcan.c  ****     uint16_t len = makeNodeInfoMessage(buffer);
+  50:Src/uavcan.c  ****     int result = canardRequestOrRespond(&g_canard,
+  51:Src/uavcan.c  ****                                         transfer->source_node_id,
+  52:Src/uavcan.c  ****                                         UAVCAN_GET_NODE_INFO_DATA_TYPE_SIGNATURE,
+  53:Src/uavcan.c  ****                                         UAVCAN_GET_NODE_INFO_DATA_TYPE_ID,
+  54:Src/uavcan.c  ****                                         &transfer->transfer_id,
+  55:Src/uavcan.c  ****                                         transfer->priority,
+  56:Src/uavcan.c  ****                                         CanardResponse,
+  57:Src/uavcan.c  ****                                         &buffer[0],
+  58:Src/uavcan.c  ****                                         (uint16_t)len);
+  59:Src/uavcan.c  **** }
+  60:Src/uavcan.c  **** 
+  61:Src/uavcan.c  **** void uavcanInit(void)
+  62:Src/uavcan.c  **** {
+  78              		.loc 1 62 0
+  79              		.cfi_startproc
+  80              		@ args = 0, pretend = 0, frame = 8
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  83              	.LCFI0:
+  84              		.cfi_def_cfa_offset 20
+  85              		.cfi_offset 4, -20
+  86              		.cfi_offset 5, -16
+  87              		.cfi_offset 6, -12
+  88              		.cfi_offset 7, -8
+  89              		.cfi_offset 14, -4
+  90 0002 85B0     		sub	sp, sp, #20
+  91              	.LCFI1:
+  92              		.cfi_def_cfa_offset 40
+  63:Src/uavcan.c  ****     CanardSTM32CANTimings timings;
+  64:Src/uavcan.c  ****     int result = canardSTM32ComputeCANTimings(HAL_RCC_GetPCLK1Freq(), 1000000, &timings);
+  93              		.loc 1 64 0
+  94 0004 FFF7FEFF 		bl	HAL_RCC_GetPCLK1Freq
+  95              	.LVL7:
+  96              	.LBB5:
+  97              	.LBB6:
+  98              		.file 2 "libcanard/drivers/stm32/canard_stm32.h"
+   1:libcanard/drivers/stm32/canard_stm32.h **** /*
+   2:libcanard/drivers/stm32/canard_stm32.h ****  * Copyright (c) 2017 UAVCAN Team
+   3:libcanard/drivers/stm32/canard_stm32.h ****  *
+   4:libcanard/drivers/stm32/canard_stm32.h ****  * Distributed under the MIT License, available in the file LICENSE.
+   5:libcanard/drivers/stm32/canard_stm32.h ****  *
+   6:libcanard/drivers/stm32/canard_stm32.h ****  * Author: Pavel Kirienko <pavel.kirienko@zubax.com>
+   7:libcanard/drivers/stm32/canard_stm32.h ****  */
+   8:libcanard/drivers/stm32/canard_stm32.h **** 
+   9:libcanard/drivers/stm32/canard_stm32.h **** #ifndef CANARD_STM32_H
+ARM GAS  /tmp/cc56gSUN.s 			page 4
+
+
+  10:libcanard/drivers/stm32/canard_stm32.h **** #define CANARD_STM32_H
+  11:libcanard/drivers/stm32/canard_stm32.h **** 
+  12:libcanard/drivers/stm32/canard_stm32.h **** #include <canard.h>
+  13:libcanard/drivers/stm32/canard_stm32.h **** #include <string.h>     // NOLINT
+  14:libcanard/drivers/stm32/canard_stm32.h **** 
+  15:libcanard/drivers/stm32/canard_stm32.h **** 
+  16:libcanard/drivers/stm32/canard_stm32.h **** #ifdef __cplusplus
+  17:libcanard/drivers/stm32/canard_stm32.h **** extern "C"
+  18:libcanard/drivers/stm32/canard_stm32.h **** {
+  19:libcanard/drivers/stm32/canard_stm32.h **** #endif
+  20:libcanard/drivers/stm32/canard_stm32.h **** 
+  21:libcanard/drivers/stm32/canard_stm32.h **** /**
+  22:libcanard/drivers/stm32/canard_stm32.h ****  * Set this build config macro to 1 to use CAN2 instead of CAN1, if available.
+  23:libcanard/drivers/stm32/canard_stm32.h ****  * Setting this parameter when CAN2 is not available may not be detected at compile time!
+  24:libcanard/drivers/stm32/canard_stm32.h ****  */
+  25:libcanard/drivers/stm32/canard_stm32.h **** #if !defined(CANARD_STM32_USE_CAN2)
+  26:libcanard/drivers/stm32/canard_stm32.h **** # define CANARD_STM32_USE_CAN2                                  0
+  27:libcanard/drivers/stm32/canard_stm32.h **** #endif
+  28:libcanard/drivers/stm32/canard_stm32.h **** 
+  29:libcanard/drivers/stm32/canard_stm32.h **** /**
+  30:libcanard/drivers/stm32/canard_stm32.h ****  * Trigger an assertion failure if inner priority inversion is detected at run time.
+  31:libcanard/drivers/stm32/canard_stm32.h ****  * This setting has no effect in release builds, where NDEBUG is defined.
+  32:libcanard/drivers/stm32/canard_stm32.h ****  */
+  33:libcanard/drivers/stm32/canard_stm32.h **** #if !defined(CANARD_STM32_DEBUG_INNER_PRIORITY_INVERSION)
+  34:libcanard/drivers/stm32/canard_stm32.h **** # define CANARD_STM32_DEBUG_INNER_PRIORITY_INVERSION            1
+  35:libcanard/drivers/stm32/canard_stm32.h **** #endif
+  36:libcanard/drivers/stm32/canard_stm32.h **** 
+  37:libcanard/drivers/stm32/canard_stm32.h **** /**
+  38:libcanard/drivers/stm32/canard_stm32.h ****  * Driver error codes.
+  39:libcanard/drivers/stm32/canard_stm32.h ****  * These values are returned negated from API functions that return int.
+  40:libcanard/drivers/stm32/canard_stm32.h ****  */
+  41:libcanard/drivers/stm32/canard_stm32.h **** #define CANARD_STM32_ERROR_UNSUPPORTED_BIT_RATE                         1000
+  42:libcanard/drivers/stm32/canard_stm32.h **** #define CANARD_STM32_ERROR_MSR_INAK_NOT_SET                             1001
+  43:libcanard/drivers/stm32/canard_stm32.h **** #define CANARD_STM32_ERROR_MSR_INAK_NOT_CLEARED                         1002
+  44:libcanard/drivers/stm32/canard_stm32.h **** #define CANARD_STM32_ERROR_UNSUPPORTED_FRAME_FORMAT                     1003
+  45:libcanard/drivers/stm32/canard_stm32.h **** 
+  46:libcanard/drivers/stm32/canard_stm32.h **** /**
+  47:libcanard/drivers/stm32/canard_stm32.h ****  * This is defined by the bxCAN hardware.
+  48:libcanard/drivers/stm32/canard_stm32.h ****  * Devices with only one CAN interface have 14 filters (e.g. F103).
+  49:libcanard/drivers/stm32/canard_stm32.h ****  * Devices with two CAN interfaces have 28 filters, which are shared between two interfaces (e.g. F
+  50:libcanard/drivers/stm32/canard_stm32.h ****  * The filters are distributed between CAN1 and CAN2 by means of the CAN2 start filter bank selecti
+  51:libcanard/drivers/stm32/canard_stm32.h ****  * which is a number from 1 to 27 inclusive. Seeing as the start bank cannot be set to 0, CAN2 has 
+  52:libcanard/drivers/stm32/canard_stm32.h ****  * to use.
+  53:libcanard/drivers/stm32/canard_stm32.h ****  */
+  54:libcanard/drivers/stm32/canard_stm32.h **** #define CANARD_STM32_NUM_ACCEPTANCE_FILTERS                            14U
+  55:libcanard/drivers/stm32/canard_stm32.h **** 
+  56:libcanard/drivers/stm32/canard_stm32.h **** /**
+  57:libcanard/drivers/stm32/canard_stm32.h ****  * The interface can be initialized in either of these modes.
+  58:libcanard/drivers/stm32/canard_stm32.h ****  *
+  59:libcanard/drivers/stm32/canard_stm32.h ****  * The Silent mode is useful for automatic CAN bit rate detection, where the interface is initializ
+  60:libcanard/drivers/stm32/canard_stm32.h ****  * arbitrarily guessed CAN bit rate (typically either 1 Mbps, 500 Kbps, 250 Kbps, or 125 Kbps, thes
+  61:libcanard/drivers/stm32/canard_stm32.h ****  * standard values defined by the UAVCAN specification), and the bus is then listened for 1 second 
+  62:libcanard/drivers/stm32/canard_stm32.h ****  * determine whether the bit rate was guessed correctly. It is paramount to use the silent mode in 
+  63:libcanard/drivers/stm32/canard_stm32.h ****  * as to not interfere with ongoing communications on the bus if the guess was incorrect.
+  64:libcanard/drivers/stm32/canard_stm32.h ****  *
+  65:libcanard/drivers/stm32/canard_stm32.h ****  * The automatic TX abort on error mode should be used during dynamic node ID allocation. The reaso
+  66:libcanard/drivers/stm32/canard_stm32.h ****  * is well explained in the UAVCAN specification, please read it.
+ARM GAS  /tmp/cc56gSUN.s 			page 5
+
+
+  67:libcanard/drivers/stm32/canard_stm32.h ****  *
+  68:libcanard/drivers/stm32/canard_stm32.h ****  * The normal mode should be used for all other use cases, particularly for the normal operation of
+  69:libcanard/drivers/stm32/canard_stm32.h ****  * hence the name.
+  70:libcanard/drivers/stm32/canard_stm32.h ****  */
+  71:libcanard/drivers/stm32/canard_stm32.h **** typedef enum
+  72:libcanard/drivers/stm32/canard_stm32.h **** {
+  73:libcanard/drivers/stm32/canard_stm32.h ****     CanardSTM32IfaceModeNormal,                         //!< Normal mode
+  74:libcanard/drivers/stm32/canard_stm32.h ****     CanardSTM32IfaceModeSilent,                         //!< Do not affect the bus, only listen
+  75:libcanard/drivers/stm32/canard_stm32.h ****     CanardSTM32IfaceModeAutomaticTxAbortOnError         //!< Abort pending TX if a bus error has oc
+  76:libcanard/drivers/stm32/canard_stm32.h **** } CanardSTM32IfaceMode;
+  77:libcanard/drivers/stm32/canard_stm32.h **** 
+  78:libcanard/drivers/stm32/canard_stm32.h **** /**
+  79:libcanard/drivers/stm32/canard_stm32.h ****  * Interface statistics; these values can be queried using a dedicated API call.
+  80:libcanard/drivers/stm32/canard_stm32.h ****  */
+  81:libcanard/drivers/stm32/canard_stm32.h **** typedef struct
+  82:libcanard/drivers/stm32/canard_stm32.h **** {
+  83:libcanard/drivers/stm32/canard_stm32.h ****     uint64_t rx_overflow_count;
+  84:libcanard/drivers/stm32/canard_stm32.h ****     uint64_t error_count;
+  85:libcanard/drivers/stm32/canard_stm32.h **** } CanardSTM32Stats;
+  86:libcanard/drivers/stm32/canard_stm32.h **** 
+  87:libcanard/drivers/stm32/canard_stm32.h **** /**
+  88:libcanard/drivers/stm32/canard_stm32.h ****  * ID and Mask of a hardware acceptance filter.
+  89:libcanard/drivers/stm32/canard_stm32.h ****  * The ID and Mask fields support flags @ref CANARD_CAN_FRAME_EFF and @ref CANARD_CAN_FRAME_RTR.
+  90:libcanard/drivers/stm32/canard_stm32.h ****  */
+  91:libcanard/drivers/stm32/canard_stm32.h **** typedef struct
+  92:libcanard/drivers/stm32/canard_stm32.h **** {
+  93:libcanard/drivers/stm32/canard_stm32.h ****     uint32_t id;
+  94:libcanard/drivers/stm32/canard_stm32.h ****     uint32_t mask;
+  95:libcanard/drivers/stm32/canard_stm32.h **** } CanardSTM32AcceptanceFilterConfiguration;
+  96:libcanard/drivers/stm32/canard_stm32.h **** 
+  97:libcanard/drivers/stm32/canard_stm32.h **** /**
+  98:libcanard/drivers/stm32/canard_stm32.h ****  * These parameters define the timings of the CAN controller.
+  99:libcanard/drivers/stm32/canard_stm32.h ****  * Please refer to the documentation of the bxCAN macrocell for explanation.
+ 100:libcanard/drivers/stm32/canard_stm32.h ****  * These values can be computed by the developed beforehand if ROM size is of a concern,
+ 101:libcanard/drivers/stm32/canard_stm32.h ****  * or they can be computed at run time using the function defined below.
+ 102:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 103:libcanard/drivers/stm32/canard_stm32.h **** typedef struct
+ 104:libcanard/drivers/stm32/canard_stm32.h **** {
+ 105:libcanard/drivers/stm32/canard_stm32.h ****     uint16_t bit_rate_prescaler;                        /// [1, 1024]
+ 106:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t bit_segment_1;                              /// [1, 16]
+ 107:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t bit_segment_2;                              /// [1, 8]
+ 108:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t max_resynchronization_jump_width;           /// [1, 4] (recommended value is 1)
+ 109:libcanard/drivers/stm32/canard_stm32.h **** } CanardSTM32CANTimings;
+ 110:libcanard/drivers/stm32/canard_stm32.h **** 
+ 111:libcanard/drivers/stm32/canard_stm32.h **** /**
+ 112:libcanard/drivers/stm32/canard_stm32.h ****  * Initializes the CAN controller at the specified bit rate.
+ 113:libcanard/drivers/stm32/canard_stm32.h ****  * The mode can be either normal, silent, or auto-abort on error;
+ 114:libcanard/drivers/stm32/canard_stm32.h ****  * in silent mode the controller will be only listening, not affecting the state of the bus;
+ 115:libcanard/drivers/stm32/canard_stm32.h ****  * in the auto abort mode the controller will cancel the pending transmissions if a bus error is en
+ 116:libcanard/drivers/stm32/canard_stm32.h ****  * The auto abort mode is needed for dynamic node ID allocation procedure; please refer to the UAVC
+ 117:libcanard/drivers/stm32/canard_stm32.h ****  * for more information about this topic.
+ 118:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 119:libcanard/drivers/stm32/canard_stm32.h ****  * This function can be invoked any number of times; every invocation re-initializes everything fro
+ 120:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 121:libcanard/drivers/stm32/canard_stm32.h ****  * WARNING: The clock of the CAN module must be enabled before this function is invoked!
+ 122:libcanard/drivers/stm32/canard_stm32.h ****  *          If CAN2 is used, CAN1 must be also enabled!
+ 123:libcanard/drivers/stm32/canard_stm32.h ****  *
+ARM GAS  /tmp/cc56gSUN.s 			page 6
+
+
+ 124:libcanard/drivers/stm32/canard_stm32.h ****  * WARNING: The driver is not thread-safe!
+ 125:libcanard/drivers/stm32/canard_stm32.h ****  *          It does not use IRQ or critical sections though, so it is safe to invoke its API functi
+ 126:libcanard/drivers/stm32/canard_stm32.h ****  *          IRQ context from the application.
+ 127:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 128:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      0               Success
+ 129:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      negative        Error
+ 130:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 131:libcanard/drivers/stm32/canard_stm32.h **** int16_t canardSTM32Init(const CanardSTM32CANTimings* const timings,
+ 132:libcanard/drivers/stm32/canard_stm32.h ****                         const CanardSTM32IfaceMode iface_mode);
+ 133:libcanard/drivers/stm32/canard_stm32.h **** 
+ 134:libcanard/drivers/stm32/canard_stm32.h **** /**
+ 135:libcanard/drivers/stm32/canard_stm32.h ****  * Pushes one frame into the TX buffer, if there is space.
+ 136:libcanard/drivers/stm32/canard_stm32.h ****  * Note that proper care is taken to ensure that no inner priority inversion is taking place.
+ 137:libcanard/drivers/stm32/canard_stm32.h ****  * This function does never block.
+ 138:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 139:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      1               Transmitted successfully
+ 140:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      0               No space in the buffer
+ 141:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      negative        Error
+ 142:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 143:libcanard/drivers/stm32/canard_stm32.h **** int16_t canardSTM32Transmit(const CanardCANFrame* const frame);
+ 144:libcanard/drivers/stm32/canard_stm32.h **** 
+ 145:libcanard/drivers/stm32/canard_stm32.h **** /**
+ 146:libcanard/drivers/stm32/canard_stm32.h ****  * Reads one frame from the hardware RX FIFO, unless all FIFO are empty.
+ 147:libcanard/drivers/stm32/canard_stm32.h ****  * This function does never block.
+ 148:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 149:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      1               Read successfully
+ 150:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      0               The buffer is empty
+ 151:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      negative        Error
+ 152:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 153:libcanard/drivers/stm32/canard_stm32.h **** int16_t canardSTM32Receive(CanardCANFrame* const out_frame);
+ 154:libcanard/drivers/stm32/canard_stm32.h **** 
+ 155:libcanard/drivers/stm32/canard_stm32.h **** /**
+ 156:libcanard/drivers/stm32/canard_stm32.h ****  * Sets up acceptance filters according to the provided list of ID and masks.
+ 157:libcanard/drivers/stm32/canard_stm32.h ****  * Note that when the interface is reinitialized, hardware acceptance filters are reset.
+ 158:libcanard/drivers/stm32/canard_stm32.h ****  * Also note that during filter reconfiguration, some RX frames may be lost.
+ 159:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 160:libcanard/drivers/stm32/canard_stm32.h ****  * Setting zero filters will result in rejection of all frames.
+ 161:libcanard/drivers/stm32/canard_stm32.h ****  * In order to accept all frames, set one filter with ID = Mask = 0, which is also the default conf
+ 162:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 163:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      0               Success
+ 164:libcanard/drivers/stm32/canard_stm32.h ****  * @retval      negative        Error
+ 165:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 166:libcanard/drivers/stm32/canard_stm32.h **** int16_t canardSTM32ConfigureAcceptanceFilters(const CanardSTM32AcceptanceFilterConfiguration* const
+ 167:libcanard/drivers/stm32/canard_stm32.h ****                                               const uint8_t num_filter_configs);
+ 168:libcanard/drivers/stm32/canard_stm32.h **** 
+ 169:libcanard/drivers/stm32/canard_stm32.h **** /**
+ 170:libcanard/drivers/stm32/canard_stm32.h ****  * Returns the running interface statistics.
+ 171:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 172:libcanard/drivers/stm32/canard_stm32.h **** CanardSTM32Stats canardSTM32GetStats(void);
+ 173:libcanard/drivers/stm32/canard_stm32.h **** 
+ 174:libcanard/drivers/stm32/canard_stm32.h **** /**
+ 175:libcanard/drivers/stm32/canard_stm32.h ****  * Given the rate of the clock supplied to the bxCAN macrocell (typically PCLK1) and the desired bi
+ 176:libcanard/drivers/stm32/canard_stm32.h ****  * this function iteratively solves for the best possible timing settings. The CAN bus timing param
+ 177:libcanard/drivers/stm32/canard_stm32.h ****  * such as the sample point location, the number of time quantas per bit, etc., are optimized accor
+ 178:libcanard/drivers/stm32/canard_stm32.h ****  * recommendations provided in the specifications of UAVCAN, DeviceNet, and CANOpen.
+ 179:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 180:libcanard/drivers/stm32/canard_stm32.h ****  * Unless noted otherwise, all units are SI units; particularly, frequency is specified in hertz.
+ARM GAS  /tmp/cc56gSUN.s 			page 7
+
+
+ 181:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 182:libcanard/drivers/stm32/canard_stm32.h ****  * The implementation is adapted from libuavcan.
+ 183:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 184:libcanard/drivers/stm32/canard_stm32.h ****  * This function is defined in the header in order to encourage the linker to discard it if it is n
+ 185:libcanard/drivers/stm32/canard_stm32.h ****  *
+ 186:libcanard/drivers/stm32/canard_stm32.h ****  * @retval 0            Success
+ 187:libcanard/drivers/stm32/canard_stm32.h ****  * @retval negative     Solution could not be found for the provided inputs.
+ 188:libcanard/drivers/stm32/canard_stm32.h ****  */
+ 189:libcanard/drivers/stm32/canard_stm32.h **** static inline
+ 190:libcanard/drivers/stm32/canard_stm32.h **** int16_t canardSTM32ComputeCANTimings(const uint32_t peripheral_clock_rate,
+ 191:libcanard/drivers/stm32/canard_stm32.h ****                                      const uint32_t target_bitrate,
+ 192:libcanard/drivers/stm32/canard_stm32.h ****                                      CanardSTM32CANTimings* const out_timings)
+ 193:libcanard/drivers/stm32/canard_stm32.h **** {
+ 194:libcanard/drivers/stm32/canard_stm32.h ****     if (target_bitrate < 1000)
+ 195:libcanard/drivers/stm32/canard_stm32.h ****     {
+ 196:libcanard/drivers/stm32/canard_stm32.h ****         return -CANARD_STM32_ERROR_UNSUPPORTED_BIT_RATE;
+ 197:libcanard/drivers/stm32/canard_stm32.h ****     }
+ 198:libcanard/drivers/stm32/canard_stm32.h **** 
+ 199:libcanard/drivers/stm32/canard_stm32.h ****     CANARD_ASSERT(out_timings != NULL);  // NOLINT
+ 200:libcanard/drivers/stm32/canard_stm32.h ****     memset(out_timings, 0, sizeof(*out_timings));
+  99              		.loc 2 200 0
+ 100 0008 0023     		movs	r3, #0
+ 101 000a 0293     		str	r3, [sp, #8]
+ 102 000c ADF80C30 		strh	r3, [sp, #12]	@ movhi
+ 201:libcanard/drivers/stm32/canard_stm32.h **** 
+ 202:libcanard/drivers/stm32/canard_stm32.h ****     /*
+ 203:libcanard/drivers/stm32/canard_stm32.h ****      * Hardware configuration
+ 204:libcanard/drivers/stm32/canard_stm32.h ****      */
+ 205:libcanard/drivers/stm32/canard_stm32.h ****     static const uint8_t MaxBS1 = 16;
+ 206:libcanard/drivers/stm32/canard_stm32.h ****     static const uint8_t MaxBS2 = 8;
+ 207:libcanard/drivers/stm32/canard_stm32.h **** 
+ 208:libcanard/drivers/stm32/canard_stm32.h ****     /*
+ 209:libcanard/drivers/stm32/canard_stm32.h ****      * Ref. "Automatic Baudrate Detection in CANopen Networks", U. Koppe, MicroControl GmbH & Co. K
+ 210:libcanard/drivers/stm32/canard_stm32.h ****      *      CAN in Automation, 2003
+ 211:libcanard/drivers/stm32/canard_stm32.h ****      *
+ 212:libcanard/drivers/stm32/canard_stm32.h ****      * According to the source, optimal quanta per bit are:
+ 213:libcanard/drivers/stm32/canard_stm32.h ****      *   Bitrate        Optimal Maximum
+ 214:libcanard/drivers/stm32/canard_stm32.h ****      *   1000 kbps      8       10
+ 215:libcanard/drivers/stm32/canard_stm32.h ****      *   500  kbps      16      17
+ 216:libcanard/drivers/stm32/canard_stm32.h ****      *   250  kbps      16      17
+ 217:libcanard/drivers/stm32/canard_stm32.h ****      *   125  kbps      16      17
+ 218:libcanard/drivers/stm32/canard_stm32.h ****      */
+ 219:libcanard/drivers/stm32/canard_stm32.h ****     const uint8_t max_quanta_per_bit = (uint8_t)((target_bitrate >= 1000000) ? 10 : 17);    // NOLI
+ 220:libcanard/drivers/stm32/canard_stm32.h ****     CANARD_ASSERT(max_quanta_per_bit <= (MaxBS1 + MaxBS2));
+ 221:libcanard/drivers/stm32/canard_stm32.h **** 
+ 222:libcanard/drivers/stm32/canard_stm32.h ****     static const uint16_t MaxSamplePointLocationPermill = 900;
+ 223:libcanard/drivers/stm32/canard_stm32.h **** 
+ 224:libcanard/drivers/stm32/canard_stm32.h ****     /*
+ 225:libcanard/drivers/stm32/canard_stm32.h ****      * Computing (prescaler * BS):
+ 226:libcanard/drivers/stm32/canard_stm32.h ****      *   BITRATE = 1 / (PRESCALER * (1 / PCLK) * (1 + BS1 + BS2))       -- See the Reference Manual
+ 227:libcanard/drivers/stm32/canard_stm32.h ****      *   BITRATE = PCLK / (PRESCALER * (1 + BS1 + BS2))                 -- Simplified
+ 228:libcanard/drivers/stm32/canard_stm32.h ****      * let:
+ 229:libcanard/drivers/stm32/canard_stm32.h ****      *   BS = 1 + BS1 + BS2                                             -- Number of time quanta pe
+ 230:libcanard/drivers/stm32/canard_stm32.h ****      *   PRESCALER_BS = PRESCALER * BS
+ 231:libcanard/drivers/stm32/canard_stm32.h ****      * ==>
+ 232:libcanard/drivers/stm32/canard_stm32.h ****      *   PRESCALER_BS = PCLK / BITRATE
+ 233:libcanard/drivers/stm32/canard_stm32.h ****      */
+ARM GAS  /tmp/cc56gSUN.s 			page 8
+
+
+ 234:libcanard/drivers/stm32/canard_stm32.h ****     const uint32_t prescaler_bs = peripheral_clock_rate / target_bitrate;
+ 103              		.loc 2 234 0
+ 104 0010 424C     		ldr	r4, .L32
+ 105 0012 A4FB0034 		umull	r3, r4, r4, r0
+ 106 0016 A40C     		lsrs	r4, r4, #18
+ 107              	.LVL8:
+ 235:libcanard/drivers/stm32/canard_stm32.h **** 
+ 236:libcanard/drivers/stm32/canard_stm32.h ****     /*
+ 237:libcanard/drivers/stm32/canard_stm32.h ****      * Searching for such prescaler value so that the number of quanta per bit is highest.
+ 238:libcanard/drivers/stm32/canard_stm32.h ****      */
+ 239:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t bs1_bs2_sum = (uint8_t)(max_quanta_per_bit - 1);    // NOLINT
+ 108              		.loc 2 239 0
+ 109 0018 0923     		movs	r3, #9
+ 110              	.LVL9:
+ 111              	.L10:
+ 240:libcanard/drivers/stm32/canard_stm32.h **** 
+ 241:libcanard/drivers/stm32/canard_stm32.h ****     while ((prescaler_bs % (1U + bs1_bs2_sum)) != 0)
+ 112              		.loc 2 241 0
+ 113 001a 591C     		adds	r1, r3, #1
+ 114 001c B4FBF1F2 		udiv	r2, r4, r1
+ 115 0020 01FB1242 		mls	r2, r1, r2, r4
+ 116 0024 22B1     		cbz	r2, .L28
+ 242:libcanard/drivers/stm32/canard_stm32.h ****     {
+ 243:libcanard/drivers/stm32/canard_stm32.h ****         if (bs1_bs2_sum <= 2)
+ 117              		.loc 2 243 0
+ 118 0026 022B     		cmp	r3, #2
+ 119 0028 73D9     		bls	.L22
+ 244:libcanard/drivers/stm32/canard_stm32.h ****         {
+ 245:libcanard/drivers/stm32/canard_stm32.h ****             return -CANARD_STM32_ERROR_UNSUPPORTED_BIT_RATE;          // No solution
+ 246:libcanard/drivers/stm32/canard_stm32.h ****         }
+ 247:libcanard/drivers/stm32/canard_stm32.h ****         bs1_bs2_sum--;
+ 120              		.loc 2 247 0
+ 121 002a 013B     		subs	r3, r3, #1
+ 122              	.LVL10:
+ 123 002c DBB2     		uxtb	r3, r3
+ 124              	.LVL11:
+ 125 002e F4E7     		b	.L10
+ 126              	.L28:
+ 248:libcanard/drivers/stm32/canard_stm32.h ****     }
+ 249:libcanard/drivers/stm32/canard_stm32.h **** 
+ 250:libcanard/drivers/stm32/canard_stm32.h ****     const uint32_t prescaler = prescaler_bs / (1U + bs1_bs2_sum);
+ 127              		.loc 2 250 0
+ 128 0030 B4FBF1F1 		udiv	r1, r4, r1
+ 129              	.LVL12:
+ 251:libcanard/drivers/stm32/canard_stm32.h ****     if ((prescaler < 1U) || (prescaler > 1024U))
+ 130              		.loc 2 251 0
+ 131 0034 4A1E     		subs	r2, r1, #1
+ 132 0036 B2F5806F 		cmp	r2, #1024
+ 133 003a 6CD2     		bcs	.L23
+ 252:libcanard/drivers/stm32/canard_stm32.h ****     {
+ 253:libcanard/drivers/stm32/canard_stm32.h ****         return -CANARD_STM32_ERROR_UNSUPPORTED_BIT_RATE;              // No solution
+ 254:libcanard/drivers/stm32/canard_stm32.h ****     }
+ 255:libcanard/drivers/stm32/canard_stm32.h **** 
+ 256:libcanard/drivers/stm32/canard_stm32.h ****     /*
+ 257:libcanard/drivers/stm32/canard_stm32.h ****      * Now we have a constraint: (BS1 + BS2) == bs1_bs2_sum.
+ 258:libcanard/drivers/stm32/canard_stm32.h ****      * We need to find such values so that the sample point is as close as possible to the optimal 
+ 259:libcanard/drivers/stm32/canard_stm32.h ****      * which is 87.5%, which is 7/8.
+ARM GAS  /tmp/cc56gSUN.s 			page 9
+
+
+ 260:libcanard/drivers/stm32/canard_stm32.h ****      *
+ 261:libcanard/drivers/stm32/canard_stm32.h ****      *   Solve[(1 + bs1)/(1 + bs1 + bs2) == 7/8, bs2]  (* Where 7/8 is 0.875, the recommended sampl
+ 262:libcanard/drivers/stm32/canard_stm32.h ****      *   {{bs2 -> (1 + bs1)/7}}
+ 263:libcanard/drivers/stm32/canard_stm32.h ****      *
+ 264:libcanard/drivers/stm32/canard_stm32.h ****      * Hence:
+ 265:libcanard/drivers/stm32/canard_stm32.h ****      *   bs2 = (1 + bs1) / 7
+ 266:libcanard/drivers/stm32/canard_stm32.h ****      *   bs1 = (7 * bs1_bs2_sum - 1) / 8
+ 267:libcanard/drivers/stm32/canard_stm32.h ****      *
+ 268:libcanard/drivers/stm32/canard_stm32.h ****      * Sample point location can be computed as follows:
+ 269:libcanard/drivers/stm32/canard_stm32.h ****      *   Sample point location = (1 + bs1) / (1 + bs1 + bs2)
+ 270:libcanard/drivers/stm32/canard_stm32.h ****      *
+ 271:libcanard/drivers/stm32/canard_stm32.h ****      * Since the optimal solution is so close to the maximum, we prepare two solutions, and then pi
+ 272:libcanard/drivers/stm32/canard_stm32.h ****      *   - With rounding to nearest
+ 273:libcanard/drivers/stm32/canard_stm32.h ****      *   - With rounding to zero
+ 274:libcanard/drivers/stm32/canard_stm32.h ****      */
+ 275:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t bs1 = (uint8_t)(((7 * bs1_bs2_sum - 1) + 4) / 8);       // Trying rounding to nearest f
+ 134              		.loc 2 275 0
+ 135 003c C3EBC306 		rsb	r6, r3, r3, lsl #3
+ 136 0040 F21C     		adds	r2, r6, #3
+ 137 0042 22D4     		bmi	.L29
+ 138              	.L13:
+ 139 0044 D210     		asrs	r2, r2, #3
+ 140 0046 D5B2     		uxtb	r5, r2
+ 141              	.LVL13:
+ 276:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t bs2 = (uint8_t)(bs1_bs2_sum - bs1);  // NOLINT
+ 142              		.loc 2 276 0
+ 143 0048 5F1B     		subs	r7, r3, r5
+ 144 004a FFB2     		uxtb	r7, r7
+ 145              	.LVL14:
+ 277:libcanard/drivers/stm32/canard_stm32.h ****     CANARD_ASSERT(bs1_bs2_sum > bs1);
+ 146              		.loc 2 277 0
+ 147 004c AB42     		cmp	r3, r5
+ 148 004e 1ED9     		bls	.L30
+ 149              	.LBB7:
+ 278:libcanard/drivers/stm32/canard_stm32.h **** 
+ 279:libcanard/drivers/stm32/canard_stm32.h ****     {
+ 280:libcanard/drivers/stm32/canard_stm32.h ****         const uint16_t sample_point_permill = (uint16_t)(1000U * (1U + bs1) / (1U + bs1 + bs2));  /
+ 150              		.loc 2 280 0
+ 151 0050 D2B2     		uxtb	r2, r2
+ 152 0052 4FF47A74 		mov	r4, #1000
+ 153              	.LVL15:
+ 154 0056 02FB0444 		mla	r4, r2, r4, r4
+ 155 005a 3A44     		add	r2, r2, r7
+ 156 005c 0132     		adds	r2, r2, #1
+ 157 005e B4FBF2F2 		udiv	r2, r4, r2
+ 158 0062 92B2     		uxth	r2, r2
+ 159              	.LVL16:
+ 281:libcanard/drivers/stm32/canard_stm32.h **** 
+ 282:libcanard/drivers/stm32/canard_stm32.h ****         if (sample_point_permill > MaxSamplePointLocationPermill)   // Strictly more!
+ 160              		.loc 2 282 0
+ 161 0064 B2F5617F 		cmp	r2, #900
+ 162 0068 05D9     		bls	.L15
+ 283:libcanard/drivers/stm32/canard_stm32.h ****         {
+ 284:libcanard/drivers/stm32/canard_stm32.h ****             bs1 = (uint8_t)((7 * bs1_bs2_sum - 1) / 8);             // Nope, too far; now rounding 
+ 163              		.loc 2 284 0
+ 164 006a 751E     		subs	r5, r6, #1
+ 165              	.LVL17:
+ARM GAS  /tmp/cc56gSUN.s 			page 10
+
+
+ 166 006c 16D4     		bmi	.L31
+ 167              	.L16:
+ 168 006e C5F3C705 		ubfx	r5, r5, #3, #8
+ 169              	.LVL18:
+ 285:libcanard/drivers/stm32/canard_stm32.h ****             bs2 = (uint8_t)(bs1_bs2_sum - bs1);
+ 170              		.loc 2 285 0
+ 171 0072 5B1B     		subs	r3, r3, r5
+ 172              	.LVL19:
+ 173 0074 DFB2     		uxtb	r7, r3
+ 174              	.LVL20:
+ 175              	.L15:
+ 176              	.LBE7:
+ 286:libcanard/drivers/stm32/canard_stm32.h ****         }
+ 287:libcanard/drivers/stm32/canard_stm32.h ****     }
+ 288:libcanard/drivers/stm32/canard_stm32.h **** 
+ 289:libcanard/drivers/stm32/canard_stm32.h ****     const bool valid = (bs1 >= 1) && (bs1 <= MaxBS1) && (bs2 >= 1) && (bs2 <= MaxBS2);
+ 177              		.loc 2 289 0
+ 178 0076 6B1E     		subs	r3, r5, #1
+ 179 0078 DBB2     		uxtb	r3, r3
+ 180 007a 0F2B     		cmp	r3, #15
+ 181 007c 10D8     		bhi	.L24
+ 182 007e 002F     		cmp	r7, #0
+ 183 0080 3CD0     		beq	.L25
+ 184 0082 082F     		cmp	r7, #8
+ 185 0084 3CD9     		bls	.L26
+ 186 0086 0022     		movs	r2, #0
+ 187              	.LVL21:
+ 188 0088 0BE0     		b	.L17
+ 189              	.LVL22:
+ 190              	.L29:
+ 275:libcanard/drivers/stm32/canard_stm32.h ****     uint8_t bs2 = (uint8_t)(bs1_bs2_sum - bs1);  // NOLINT
+ 191              		.loc 2 275 0
+ 192 008a 0732     		adds	r2, r2, #7
+ 193 008c DAE7     		b	.L13
+ 194              	.LVL23:
+ 195              	.L30:
+ 277:libcanard/drivers/stm32/canard_stm32.h **** 
+ 196              		.loc 2 277 0
+ 197 008e 244B     		ldr	r3, .L32+4
+ 198              	.LVL24:
+ 199 0090 244A     		ldr	r2, .L32+8
+ 200 0092 40F21511 		movw	r1, #277
+ 201              	.LVL25:
+ 202 0096 2448     		ldr	r0, .L32+12
+ 203              	.LVL26:
+ 204 0098 FFF7FEFF 		bl	__assert_func
+ 205              	.LVL27:
+ 206              	.L31:
+ 207              	.LBB8:
+ 284:libcanard/drivers/stm32/canard_stm32.h ****             bs2 = (uint8_t)(bs1_bs2_sum - bs1);
+ 208              		.loc 2 284 0
+ 209 009c 0735     		adds	r5, r5, #7
+ 210 009e E6E7     		b	.L16
+ 211              	.LVL28:
+ 212              	.L24:
+ 213              	.LBE8:
+ 214              		.loc 2 289 0
+ARM GAS  /tmp/cc56gSUN.s 			page 11
+
+
+ 215 00a0 0022     		movs	r2, #0
+ 216              	.LVL29:
+ 217              	.L17:
+ 290:libcanard/drivers/stm32/canard_stm32.h **** 
+ 291:libcanard/drivers/stm32/canard_stm32.h ****     /*
+ 292:libcanard/drivers/stm32/canard_stm32.h ****      * Final validation
+ 293:libcanard/drivers/stm32/canard_stm32.h ****      * Helpful Python:
+ 294:libcanard/drivers/stm32/canard_stm32.h ****      * def sample_point_from_btr(x):
+ 295:libcanard/drivers/stm32/canard_stm32.h ****      *     assert 0b0011110010000000111111000000000 & x == 0
+ 296:libcanard/drivers/stm32/canard_stm32.h ****      *     ts2,ts1,brp = (x>>20)&7, (x>>16)&15, x&511
+ 297:libcanard/drivers/stm32/canard_stm32.h ****      *     return (1+ts1+1)/(1+ts1+1+ts2+1)
+ 298:libcanard/drivers/stm32/canard_stm32.h ****      */
+ 299:libcanard/drivers/stm32/canard_stm32.h ****     if ((target_bitrate != (peripheral_clock_rate / (prescaler * (1U + bs1 + bs2)))) ||
+ 218              		.loc 2 299 0
+ 219 00a2 EB19     		adds	r3, r5, r7
+ 220 00a4 03FB0113 		mla	r3, r3, r1, r1
+ 221 00a8 B0FBF3F0 		udiv	r0, r0, r3
+ 222              	.LVL30:
+ 223 00ac 1F4B     		ldr	r3, .L32+16
+ 224 00ae 9842     		cmp	r0, r3
+ 225 00b0 28D1     		bne	.L18
+ 226 00b2 3AB3     		cbz	r2, .L18
+ 300:libcanard/drivers/stm32/canard_stm32.h ****         !valid)
+ 301:libcanard/drivers/stm32/canard_stm32.h ****     {
+ 302:libcanard/drivers/stm32/canard_stm32.h ****         // This actually means that the algorithm has a logic error, hence assert(0).
+ 303:libcanard/drivers/stm32/canard_stm32.h ****         CANARD_ASSERT(0);  // NOLINT
+ 304:libcanard/drivers/stm32/canard_stm32.h ****         return -CANARD_STM32_ERROR_UNSUPPORTED_BIT_RATE;
+ 305:libcanard/drivers/stm32/canard_stm32.h ****     }
+ 306:libcanard/drivers/stm32/canard_stm32.h **** 
+ 307:libcanard/drivers/stm32/canard_stm32.h ****     out_timings->bit_rate_prescaler = (uint16_t) prescaler;
+ 227              		.loc 2 307 0
+ 228 00b4 ADF80810 		strh	r1, [sp, #8]	@ movhi
+ 308:libcanard/drivers/stm32/canard_stm32.h ****     out_timings->max_resynchronization_jump_width = 1;      // One is recommended by UAVCAN, CANOpe
+ 229              		.loc 2 308 0
+ 230 00b8 0123     		movs	r3, #1
+ 231 00ba 8DF80C30 		strb	r3, [sp, #12]
+ 309:libcanard/drivers/stm32/canard_stm32.h ****     out_timings->bit_segment_1 = bs1;
+ 232              		.loc 2 309 0
+ 233 00be 8DF80A50 		strb	r5, [sp, #10]
+ 310:libcanard/drivers/stm32/canard_stm32.h ****     out_timings->bit_segment_2 = bs2;
+ 234              		.loc 2 310 0
+ 235 00c2 8DF80B70 		strb	r7, [sp, #11]
+ 311:libcanard/drivers/stm32/canard_stm32.h **** 
+ 312:libcanard/drivers/stm32/canard_stm32.h ****     return 0;
+ 236              		.loc 2 312 0
+ 237 00c6 0023     		movs	r3, #0
+ 238              	.LVL31:
+ 239              	.L11:
+ 240              	.LBE6:
+ 241              	.LBE5:
+  65:Src/uavcan.c  ****     if (result)
+ 242              		.loc 1 65 0
+ 243 00c8 03B1     		cbz	r3, .L20
+  66:Src/uavcan.c  ****     {
+  67:Src/uavcan.c  ****         __ASM volatile("BKPT #01");
+ 244              		.loc 1 67 0
+ 245              		.syntax unified
+ARM GAS  /tmp/cc56gSUN.s 			page 12
+
+
+ 246              	@ 67 "Src/uavcan.c" 1
+ 247 00ca 01BE     		BKPT #01
+ 248              	@ 0 "" 2
+ 249              		.thumb
+ 250              		.syntax unified
+ 251              	.L20:
+  68:Src/uavcan.c  ****     }
+  69:Src/uavcan.c  ****     result = canardSTM32Init(&timings, CanardSTM32IfaceModeNormal);
+ 252              		.loc 1 69 0
+ 253 00cc 0021     		movs	r1, #0
+ 254 00ce 02A8     		add	r0, sp, #8
+ 255 00d0 FFF7FEFF 		bl	canardSTM32Init
+ 256              	.LVL32:
+  70:Src/uavcan.c  ****     if (result)
+ 257              		.loc 1 70 0
+ 258 00d4 00B1     		cbz	r0, .L21
+  71:Src/uavcan.c  ****     {
+  72:Src/uavcan.c  ****         __ASM volatile("BKPT #01");
+ 259              		.loc 1 72 0
+ 260              		.syntax unified
+ 261              	@ 72 "Src/uavcan.c" 1
+ 262 00d6 01BE     		BKPT #01
+ 263              	@ 0 "" 2
+ 264              		.thumb
+ 265              		.syntax unified
+ 266              	.L21:
+  73:Src/uavcan.c  ****     }
+  74:Src/uavcan.c  ****  
+  75:Src/uavcan.c  ****     canardInit(&g_canard,                         // Uninitialized library instance
+ 267              		.loc 1 75 0
+ 268 00d8 154C     		ldr	r4, .L32+20
+ 269 00da 0023     		movs	r3, #0
+ 270 00dc 0193     		str	r3, [sp, #4]
+ 271 00de 154B     		ldr	r3, .L32+24
+ 272 00e0 0093     		str	r3, [sp]
+ 273 00e2 154B     		ldr	r3, .L32+28
+ 274 00e4 4FF48062 		mov	r2, #1024
+ 275 00e8 1449     		ldr	r1, .L32+32
+ 276 00ea 2046     		mov	r0, r4
+ 277              	.LVL33:
+ 278 00ec FFF7FEFF 		bl	canardInit
+ 279              	.LVL34:
+  76:Src/uavcan.c  ****                g_canard_memory_pool,              // Raw memory chunk used for dynamic allocation
+  77:Src/uavcan.c  ****                sizeof(g_canard_memory_pool),      // Size of the above, in bytes
+  78:Src/uavcan.c  ****                onTransferReceived,                // Callback, see CanardOnTransferReception
+  79:Src/uavcan.c  ****                shouldAcceptTransfer,              // Callback, see CanardShouldAcceptTransfer
+  80:Src/uavcan.c  ****                NULL);
+  81:Src/uavcan.c  ****  
+  82:Src/uavcan.c  ****     canardSetLocalNodeID(&g_canard, 1);
+ 280              		.loc 1 82 0
+ 281 00f0 0121     		movs	r1, #1
+ 282 00f2 2046     		mov	r0, r4
+ 283 00f4 FFF7FEFF 		bl	canardSetLocalNodeID
+ 284              	.LVL35:
+  83:Src/uavcan.c  **** }
+ 285              		.loc 1 83 0
+ 286 00f8 05B0     		add	sp, sp, #20
+ARM GAS  /tmp/cc56gSUN.s 			page 13
+
+
+ 287              	.LCFI2:
+ 288              		.cfi_remember_state
+ 289              		.cfi_def_cfa_offset 20
+ 290              		@ sp needed
+ 291 00fa F0BD     		pop	{r4, r5, r6, r7, pc}
+ 292              	.LVL36:
+ 293              	.L25:
+ 294              	.LCFI3:
+ 295              		.cfi_restore_state
+ 296              	.LBB10:
+ 297              	.LBB9:
+ 289:libcanard/drivers/stm32/canard_stm32.h **** 
+ 298              		.loc 2 289 0
+ 299 00fc 0022     		movs	r2, #0
+ 300              	.LVL37:
+ 301 00fe D0E7     		b	.L17
+ 302              	.LVL38:
+ 303              	.L26:
+ 304 0100 0122     		movs	r2, #1
+ 305              	.LVL39:
+ 306 0102 CEE7     		b	.L17
+ 307              	.LVL40:
+ 308              	.L18:
+ 303:libcanard/drivers/stm32/canard_stm32.h ****         return -CANARD_STM32_ERROR_UNSUPPORTED_BIT_RATE;
+ 309              		.loc 2 303 0
+ 310 0104 0E4B     		ldr	r3, .L32+36
+ 311 0106 074A     		ldr	r2, .L32+8
+ 312              	.LVL41:
+ 313 0108 40F22F11 		movw	r1, #303
+ 314              	.LVL42:
+ 315 010c 0648     		ldr	r0, .L32+12
+ 316 010e FFF7FEFF 		bl	__assert_func
+ 317              	.LVL43:
+ 318              	.L22:
+ 245:libcanard/drivers/stm32/canard_stm32.h ****         }
+ 319              		.loc 2 245 0
+ 320 0112 0C4B     		ldr	r3, .L32+40
+ 321              	.LVL44:
+ 322 0114 D8E7     		b	.L11
+ 323              	.LVL45:
+ 324              	.L23:
+ 253:libcanard/drivers/stm32/canard_stm32.h ****     }
+ 325              		.loc 2 253 0
+ 326 0116 0B4B     		ldr	r3, .L32+40
+ 327              	.LVL46:
+ 328 0118 D6E7     		b	.L11
+ 329              	.L33:
+ 330 011a 00BF     		.align	2
+ 331              	.L32:
+ 332 011c 83DE1B43 		.word	1125899907
+ 333 0120 00000000 		.word	.LC0
+ 334 0124 00000000 		.word	.LANCHOR0
+ 335 0128 14000000 		.word	.LC1
+ 336 012c 40420F00 		.word	1000000
+ 337 0130 00000000 		.word	.LANCHOR2
+ 338 0134 00000000 		.word	shouldAcceptTransfer
+ 339 0138 00000000 		.word	onTransferReceived
+ARM GAS  /tmp/cc56gSUN.s 			page 14
+
+
+ 340 013c 00000000 		.word	.LANCHOR1
+ 341 0140 3C000000 		.word	.LC2
+ 342 0144 18FCFFFF 		.word	-1000
+ 343              	.LBE9:
+ 344              	.LBE10:
+ 345              		.cfi_endproc
+ 346              	.LFE70:
+ 348              		.section	.text.sendCanard,"ax",%progbits
+ 349              		.align	1
+ 350              		.global	sendCanard
+ 351              		.syntax unified
+ 352              		.thumb
+ 353              		.thumb_func
+ 354              		.fpu softvfp
+ 356              	sendCanard:
+ 357              	.LFB71:
+  84:Src/uavcan.c  **** 
+  85:Src/uavcan.c  **** void sendCanard(void)
+  86:Src/uavcan.c  **** {
+ 358              		.loc 1 86 0
+ 359              		.cfi_startproc
+ 360              		@ args = 0, pretend = 0, frame = 0
+ 361              		@ frame_needed = 0, uses_anonymous_args = 0
+ 362 0000 08B5     		push	{r3, lr}
+ 363              	.LCFI4:
+ 364              		.cfi_def_cfa_offset 8
+ 365              		.cfi_offset 3, -8
+ 366              		.cfi_offset 14, -4
+  87:Src/uavcan.c  ****   const CanardCANFrame* txf = canardPeekTxQueue(&g_canard); 
+ 367              		.loc 1 87 0
+ 368 0002 0A48     		ldr	r0, .L42
+ 369 0004 FFF7FEFF 		bl	canardPeekTxQueue
+ 370              	.LVL47:
+  88:Src/uavcan.c  ****   while(txf)
+ 371              		.loc 1 88 0
+ 372 0008 04E0     		b	.L35
+ 373              	.LVL48:
+ 374              	.L41:
+ 375              	.LBB11:
+  89:Src/uavcan.c  ****     {
+  90:Src/uavcan.c  ****         const int tx_res = canardSTM32Transmit(txf);
+  91:Src/uavcan.c  ****         if (tx_res < 0)                  // Failure - drop the frame and report
+  92:Src/uavcan.c  ****         {
+  93:Src/uavcan.c  ****             __ASM volatile("BKPT #01");  // TODO: handle the error properly
+ 376              		.loc 1 93 0
+ 377              		.syntax unified
+ 378              	@ 93 "Src/uavcan.c" 1
+ 379 000a 01BE     		BKPT #01
+ 380              	@ 0 "" 2
+ 381              		.thumb
+ 382              		.syntax unified
+ 383 000c 07E0     		b	.L36
+ 384              	.LVL49:
+ 385              	.L37:
+  94:Src/uavcan.c  ****         }
+  95:Src/uavcan.c  ****         if(tx_res > 0)
+  96:Src/uavcan.c  ****         {
+ARM GAS  /tmp/cc56gSUN.s 			page 15
+
+
+  97:Src/uavcan.c  ****             canardPopTxQueue(&g_canard);
+  98:Src/uavcan.c  ****         }
+  99:Src/uavcan.c  ****         txf = canardPeekTxQueue(&g_canard); 
+ 386              		.loc 1 99 0
+ 387 000e 0748     		ldr	r0, .L42
+ 388 0010 FFF7FEFF 		bl	canardPeekTxQueue
+ 389              	.LVL50:
+ 390              	.L35:
+ 391              	.LBE11:
+  88:Src/uavcan.c  ****     {
+ 392              		.loc 1 88 0
+ 393 0014 48B1     		cbz	r0, .L40
+ 394              	.LBB12:
+  90:Src/uavcan.c  ****         if (tx_res < 0)                  // Failure - drop the frame and report
+ 395              		.loc 1 90 0
+ 396 0016 FFF7FEFF 		bl	canardSTM32Transmit
+ 397              	.LVL51:
+  91:Src/uavcan.c  ****         {
+ 398              		.loc 1 91 0
+ 399 001a 0028     		cmp	r0, #0
+ 400 001c F5DB     		blt	.L41
+ 401              	.L36:
+  95:Src/uavcan.c  ****         {
+ 402              		.loc 1 95 0
+ 403 001e 0028     		cmp	r0, #0
+ 404 0020 F5DD     		ble	.L37
+  97:Src/uavcan.c  ****         }
+ 405              		.loc 1 97 0
+ 406 0022 0248     		ldr	r0, .L42
+ 407              	.LVL52:
+ 408 0024 FFF7FEFF 		bl	canardPopTxQueue
+ 409              	.LVL53:
+ 410 0028 F1E7     		b	.L37
+ 411              	.LVL54:
+ 412              	.L40:
+ 413              	.LBE12:
+ 100:Src/uavcan.c  ****     }
+ 101:Src/uavcan.c  **** }
+ 414              		.loc 1 101 0
+ 415 002a 08BD     		pop	{r3, pc}
+ 416              	.L43:
+ 417              		.align	2
+ 418              	.L42:
+ 419 002c 00000000 		.word	.LANCHOR2
+ 420              		.cfi_endproc
+ 421              	.LFE71:
+ 423              		.section	.text.receiveCanard,"ax",%progbits
+ 424              		.align	1
+ 425              		.global	receiveCanard
+ 426              		.syntax unified
+ 427              		.thumb
+ 428              		.thumb_func
+ 429              		.fpu softvfp
+ 431              	receiveCanard:
+ 432              	.LFB72:
+ 102:Src/uavcan.c  **** 
+ 103:Src/uavcan.c  **** void receiveCanard(void)
+ARM GAS  /tmp/cc56gSUN.s 			page 16
+
+
+ 104:Src/uavcan.c  **** {
+ 433              		.loc 1 104 0
+ 434              		.cfi_startproc
+ 435              		@ args = 0, pretend = 0, frame = 16
+ 436              		@ frame_needed = 0, uses_anonymous_args = 0
+ 437 0000 00B5     		push	{lr}
+ 438              	.LCFI5:
+ 439              		.cfi_def_cfa_offset 4
+ 440              		.cfi_offset 14, -4
+ 441 0002 85B0     		sub	sp, sp, #20
+ 442              	.LCFI6:
+ 443              		.cfi_def_cfa_offset 24
+ 105:Src/uavcan.c  ****     CanardCANFrame rx_frame;
+ 106:Src/uavcan.c  ****     int res = canardSTM32Receive(&rx_frame);
+ 444              		.loc 1 106 0
+ 445 0004 6846     		mov	r0, sp
+ 446 0006 FFF7FEFF 		bl	canardSTM32Receive
+ 447              	.LVL55:
+ 107:Src/uavcan.c  ****     if(res)
+ 448              		.loc 1 107 0
+ 449 000a 10B9     		cbnz	r0, .L47
+ 450              	.LVL56:
+ 451              	.L44:
+ 108:Src/uavcan.c  ****     {
+ 109:Src/uavcan.c  ****         canardHandleRxFrame(&g_canard, &rx_frame, HAL_GetTick() * 1000);
+ 110:Src/uavcan.c  ****     }    
+ 111:Src/uavcan.c  **** }
+ 452              		.loc 1 111 0
+ 453 000c 05B0     		add	sp, sp, #20
+ 454              	.LCFI7:
+ 455              		.cfi_remember_state
+ 456              		.cfi_def_cfa_offset 4
+ 457              		@ sp needed
+ 458 000e 5DF804FB 		ldr	pc, [sp], #4
+ 459              	.LVL57:
+ 460              	.L47:
+ 461              	.LCFI8:
+ 462              		.cfi_restore_state
+ 109:Src/uavcan.c  ****     }    
+ 463              		.loc 1 109 0
+ 464 0012 FFF7FEFF 		bl	HAL_GetTick
+ 465              	.LVL58:
+ 466 0016 4FF47A72 		mov	r2, #1000
+ 467 001a 02FB00F2 		mul	r2, r2, r0
+ 468 001e 0023     		movs	r3, #0
+ 469 0020 6946     		mov	r1, sp
+ 470 0022 0248     		ldr	r0, .L48
+ 471 0024 FFF7FEFF 		bl	canardHandleRxFrame
+ 472              	.LVL59:
+ 473              		.loc 1 111 0
+ 474 0028 F0E7     		b	.L44
+ 475              	.L49:
+ 476 002a 00BF     		.align	2
+ 477              	.L48:
+ 478 002c 00000000 		.word	.LANCHOR2
+ 479              		.cfi_endproc
+ 480              	.LFE72:
+ARM GAS  /tmp/cc56gSUN.s 			page 17
+
+
+ 482              		.section	.text.makeNodeStatusMessage,"ax",%progbits
+ 483              		.align	1
+ 484              		.global	makeNodeStatusMessage
+ 485              		.syntax unified
+ 486              		.thumb
+ 487              		.thumb_func
+ 488              		.fpu softvfp
+ 490              	makeNodeStatusMessage:
+ 491              	.LFB75:
+ 112:Src/uavcan.c  **** 
+ 113:Src/uavcan.c  **** void spinCanard(void)
+ 114:Src/uavcan.c  **** {  
+ 115:Src/uavcan.c  ****     static uint32_t spin_time = 0;
+ 116:Src/uavcan.c  ****     if(HAL_GetTick() < spin_time + CANARD_SPIN_PERIOD) return;  // rate limiting
+ 117:Src/uavcan.c  ****     spin_time = HAL_GetTick();
+ 118:Src/uavcan.c  ****     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_12);   
+ 119:Src/uavcan.c  ****     
+ 120:Src/uavcan.c  ****     uint8_t buffer[UAVCAN_NODE_STATUS_MESSAGE_SIZE];    
+ 121:Src/uavcan.c  ****     static uint8_t transfer_id = 0;                           // This variable MUST BE STATIC; refe
+ 122:Src/uavcan.c  ****     makeNodeStatusMessage(buffer);  
+ 123:Src/uavcan.c  ****     canardBroadcast(&g_canard, 
+ 124:Src/uavcan.c  ****                     UAVCAN_NODE_STATUS_DATA_TYPE_SIGNATURE,
+ 125:Src/uavcan.c  ****                     UAVCAN_NODE_STATUS_DATA_TYPE_ID,
+ 126:Src/uavcan.c  ****                     &transfer_id,
+ 127:Src/uavcan.c  ****                     CANARD_TRANSFER_PRIORITY_LOW,
+ 128:Src/uavcan.c  ****                     buffer, 
+ 129:Src/uavcan.c  ****                     UAVCAN_NODE_STATUS_MESSAGE_SIZE);                         //some indication
+ 130:Src/uavcan.c  ****     
+ 131:Src/uavcan.c  **** }
+ 132:Src/uavcan.c  **** 
+ 133:Src/uavcan.c  **** void publishCanard(void)
+ 134:Src/uavcan.c  **** {  
+ 135:Src/uavcan.c  ****     static uint32_t publish_time = 0;
+ 136:Src/uavcan.c  ****     if(HAL_GetTick() < publish_time + PUBLISHER_PERIOD_mS) {return;} // rate limiting
+ 137:Src/uavcan.c  ****     publish_time = HAL_GetTick();
+ 138:Src/uavcan.c  ****     //publishSinValue();
+ 139:Src/uavcan.c  ****    // publishCircuitStatus();
+ 140:Src/uavcan.c  ****     publishBattInfo();
+ 141:Src/uavcan.c  ****     
+ 142:Src/uavcan.c  ****    
+ 143:Src/uavcan.c  **** }
+ 144:Src/uavcan.c  **** 
+ 145:Src/uavcan.c  **** void makeNodeStatusMessage(uint8_t buffer[UAVCAN_NODE_STATUS_MESSAGE_SIZE])
+ 146:Src/uavcan.c  **** {
+ 492              		.loc 1 146 0
+ 493              		.cfi_startproc
+ 494              		@ args = 0, pretend = 0, frame = 8
+ 495              		@ frame_needed = 0, uses_anonymous_args = 0
+ 496              	.LVL60:
+ 497 0000 30B5     		push	{r4, r5, lr}
+ 498              	.LCFI9:
+ 499              		.cfi_def_cfa_offset 12
+ 500              		.cfi_offset 4, -12
+ 501              		.cfi_offset 5, -8
+ 502              		.cfi_offset 14, -4
+ 503 0002 83B0     		sub	sp, sp, #12
+ 504              	.LCFI10:
+ARM GAS  /tmp/cc56gSUN.s 			page 18
+
+
+ 505              		.cfi_def_cfa_offset 24
+ 506 0004 0446     		mov	r4, r0
+ 147:Src/uavcan.c  ****     uint8_t node_health = UAVCAN_NODE_HEALTH_OK;
+ 507              		.loc 1 147 0
+ 508 0006 0025     		movs	r5, #0
+ 509 0008 8DF80750 		strb	r5, [sp, #7]
+ 148:Src/uavcan.c  ****     uint8_t node_mode   = UAVCAN_NODE_MODE_OPERATIONAL;
+ 510              		.loc 1 148 0
+ 511 000c 8DF80650 		strb	r5, [sp, #6]
+ 149:Src/uavcan.c  ****     memset(buffer, 0, UAVCAN_NODE_STATUS_MESSAGE_SIZE);
+ 512              		.loc 1 149 0
+ 513 0010 0560     		str	r5, [r0]	@ unaligned
+ 514 0012 C0F80350 		str	r5, [r0, #3]	@ unaligned
+ 150:Src/uavcan.c  ****     uint32_t uptime_sec = (HAL_GetTick() / 1000);
+ 515              		.loc 1 150 0
+ 516 0016 FFF7FEFF 		bl	HAL_GetTick
+ 517              	.LVL61:
+ 518 001a 0E4B     		ldr	r3, .L52
+ 519 001c A3FB0030 		umull	r3, r0, r3, r0
+ 520 0020 8009     		lsrs	r0, r0, #6
+ 521 0022 02AB     		add	r3, sp, #8
+ 522 0024 43F8080D 		str	r0, [r3, #-8]!
+ 151:Src/uavcan.c  ****     canardEncodeScalar(buffer,  0, 32, &uptime_sec);
+ 523              		.loc 1 151 0
+ 524 0028 2022     		movs	r2, #32
+ 525 002a 2946     		mov	r1, r5
+ 526 002c 2046     		mov	r0, r4
+ 527 002e FFF7FEFF 		bl	canardEncodeScalar
+ 528              	.LVL62:
+ 152:Src/uavcan.c  ****     canardEncodeScalar(buffer, 32,  2, &node_health);
+ 529              		.loc 1 152 0
+ 530 0032 0DF10703 		add	r3, sp, #7
+ 531 0036 0222     		movs	r2, #2
+ 532 0038 2021     		movs	r1, #32
+ 533 003a 2046     		mov	r0, r4
+ 534 003c FFF7FEFF 		bl	canardEncodeScalar
+ 535              	.LVL63:
+ 153:Src/uavcan.c  ****     canardEncodeScalar(buffer, 34,  3, &node_mode);
+ 536              		.loc 1 153 0
+ 537 0040 0DF10603 		add	r3, sp, #6
+ 538 0044 0322     		movs	r2, #3
+ 539 0046 2221     		movs	r1, #34
+ 540 0048 2046     		mov	r0, r4
+ 541 004a FFF7FEFF 		bl	canardEncodeScalar
+ 542              	.LVL64:
+ 154:Src/uavcan.c  **** }
+ 543              		.loc 1 154 0
+ 544 004e 03B0     		add	sp, sp, #12
+ 545              	.LCFI11:
+ 546              		.cfi_def_cfa_offset 12
+ 547              		@ sp needed
+ 548 0050 30BD     		pop	{r4, r5, pc}
+ 549              	.LVL65:
+ 550              	.L53:
+ 551 0052 00BF     		.align	2
+ 552              	.L52:
+ 553 0054 D34D6210 		.word	274877907
+ARM GAS  /tmp/cc56gSUN.s 			page 19
+
+
+ 554              		.cfi_endproc
+ 555              	.LFE75:
+ 557              		.section	.text.spinCanard,"ax",%progbits
+ 558              		.align	1
+ 559              		.global	spinCanard
+ 560              		.syntax unified
+ 561              		.thumb
+ 562              		.thumb_func
+ 563              		.fpu softvfp
+ 565              	spinCanard:
+ 566              	.LFB73:
+ 114:Src/uavcan.c  ****     static uint32_t spin_time = 0;
+ 567              		.loc 1 114 0
+ 568              		.cfi_startproc
+ 569              		@ args = 0, pretend = 0, frame = 8
+ 570              		@ frame_needed = 0, uses_anonymous_args = 0
+ 571 0000 10B5     		push	{r4, lr}
+ 572              	.LCFI12:
+ 573              		.cfi_def_cfa_offset 8
+ 574              		.cfi_offset 4, -8
+ 575              		.cfi_offset 14, -4
+ 576 0002 88B0     		sub	sp, sp, #32
+ 577              	.LCFI13:
+ 578              		.cfi_def_cfa_offset 40
+ 116:Src/uavcan.c  ****     spin_time = HAL_GetTick();
+ 579              		.loc 1 116 0
+ 580 0004 FFF7FEFF 		bl	HAL_GetTick
+ 581              	.LVL66:
+ 582 0008 154B     		ldr	r3, .L59+8
+ 583 000a 1B68     		ldr	r3, [r3]
+ 584 000c 6433     		adds	r3, r3, #100
+ 585 000e 9842     		cmp	r0, r3
+ 586 0010 01D2     		bcs	.L58
+ 587              	.L54:
+ 131:Src/uavcan.c  **** 
+ 588              		.loc 1 131 0
+ 589 0012 08B0     		add	sp, sp, #32
+ 590              	.LCFI14:
+ 591              		.cfi_remember_state
+ 592              		.cfi_def_cfa_offset 8
+ 593              		@ sp needed
+ 594 0014 10BD     		pop	{r4, pc}
+ 595              	.L58:
+ 596              	.LCFI15:
+ 597              		.cfi_restore_state
+ 117:Src/uavcan.c  ****     HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_12);   
+ 598              		.loc 1 117 0
+ 599 0016 FFF7FEFF 		bl	HAL_GetTick
+ 600              	.LVL67:
+ 601 001a 114B     		ldr	r3, .L59+8
+ 602 001c 1860     		str	r0, [r3]
+ 118:Src/uavcan.c  ****     
+ 603              		.loc 1 118 0
+ 604 001e 4FF48051 		mov	r1, #4096
+ 605 0022 1048     		ldr	r0, .L59+12
+ 606 0024 FFF7FEFF 		bl	HAL_GPIO_TogglePin
+ 607              	.LVL68:
+ARM GAS  /tmp/cc56gSUN.s 			page 20
+
+
+ 122:Src/uavcan.c  ****     canardBroadcast(&g_canard, 
+ 608              		.loc 1 122 0
+ 609 0028 06AC     		add	r4, sp, #24
+ 610 002a 2046     		mov	r0, r4
+ 611 002c FFF7FEFF 		bl	makeNodeStatusMessage
+ 612              	.LVL69:
+ 123:Src/uavcan.c  ****                     UAVCAN_NODE_STATUS_DATA_TYPE_SIGNATURE,
+ 613              		.loc 1 123 0
+ 614 0030 0723     		movs	r3, #7
+ 615 0032 0493     		str	r3, [sp, #16]
+ 616 0034 0394     		str	r4, [sp, #12]
+ 617 0036 1823     		movs	r3, #24
+ 618 0038 0293     		str	r3, [sp, #8]
+ 619 003a 0B4B     		ldr	r3, .L59+16
+ 620 003c 0193     		str	r3, [sp, #4]
+ 621 003e 40F25513 		movw	r3, #341
+ 622 0042 0093     		str	r3, [sp]
+ 623 0044 04A3     		adr	r3, .L59
+ 624 0046 D3E90023 		ldrd	r2, [r3]
+ 625 004a 0848     		ldr	r0, .L59+20
+ 626 004c FFF7FEFF 		bl	canardBroadcast
+ 627              	.LVL70:
+ 628 0050 DFE7     		b	.L54
+ 629              	.L60:
+ 630 0052 00BFAFF3 		.align	3
+ 630      0080
+ 631              	.L59:
+ 632 0058 F1C6A7C1 		.word	-1045969167
+ 633 005c D068080F 		.word	252209360
+ 634 0060 00000000 		.word	.LANCHOR3
+ 635 0064 000C0140 		.word	1073810432
+ 636 0068 00000000 		.word	.LANCHOR4
+ 637 006c 00000000 		.word	.LANCHOR2
+ 638              		.cfi_endproc
+ 639              	.LFE73:
+ 641              		.section	.text.readUniqueID,"ax",%progbits
+ 642              		.align	1
+ 643              		.global	readUniqueID
+ 644              		.syntax unified
+ 645              		.thumb
+ 646              		.thumb_func
+ 647              		.fpu softvfp
+ 649              	readUniqueID:
+ 650              	.LFB77:
+ 155:Src/uavcan.c  **** 
+ 156:Src/uavcan.c  **** uint16_t makeNodeInfoMessage(uint8_t buffer[UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE])
+ 157:Src/uavcan.c  **** {
+ 158:Src/uavcan.c  ****     memset(buffer, 0, UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE);
+ 159:Src/uavcan.c  ****     makeNodeStatusMessage(buffer);
+ 160:Src/uavcan.c  ****    
+ 161:Src/uavcan.c  ****     buffer[7] = APP_VERSION_MAJOR;
+ 162:Src/uavcan.c  ****     buffer[8] = APP_VERSION_MINOR;
+ 163:Src/uavcan.c  ****     buffer[9] = 1;                          // Optional field flags, VCS commit is set
+ 164:Src/uavcan.c  ****     uint32_t u32 = GIT_HASH;
+ 165:Src/uavcan.c  ****     canardEncodeScalar(buffer, 80, 32, &u32); 
+ 166:Src/uavcan.c  ****     
+ 167:Src/uavcan.c  ****     readUniqueID(&buffer[24]);
+ARM GAS  /tmp/cc56gSUN.s 			page 21
+
+
+ 168:Src/uavcan.c  ****     const size_t name_len = strlen(APP_NODE_NAME);
+ 169:Src/uavcan.c  ****     memcpy(&buffer[41], APP_NODE_NAME, name_len);
+ 170:Src/uavcan.c  ****     return 41 + name_len ;
+ 171:Src/uavcan.c  **** }
+ 172:Src/uavcan.c  **** 
+ 173:Src/uavcan.c  **** void readUniqueID(uint8_t* out_uid)
+ 174:Src/uavcan.c  **** {
+ 651              		.loc 1 174 0
+ 652              		.cfi_startproc
+ 653              		@ args = 0, pretend = 0, frame = 0
+ 654              		@ frame_needed = 0, uses_anonymous_args = 0
+ 655              		@ link register save eliminated.
+ 656              	.LVL71:
+ 657              	.LBB13:
+ 175:Src/uavcan.c  ****     for (uint8_t i = 0; i < UNIQUE_ID_LENGTH_BYTES; i++)
+ 658              		.loc 1 175 0
+ 659 0000 0023     		movs	r3, #0
+ 660 0002 02E0     		b	.L62
+ 661              	.LVL72:
+ 662              	.L63:
+ 176:Src/uavcan.c  ****     {
+ 177:Src/uavcan.c  ****         out_uid[i] = i;
+ 663              		.loc 1 177 0 discriminator 3
+ 664 0004 C354     		strb	r3, [r0, r3]
+ 175:Src/uavcan.c  ****     for (uint8_t i = 0; i < UNIQUE_ID_LENGTH_BYTES; i++)
+ 665              		.loc 1 175 0 discriminator 3
+ 666 0006 0133     		adds	r3, r3, #1
+ 667              	.LVL73:
+ 668 0008 DBB2     		uxtb	r3, r3
+ 669              	.LVL74:
+ 670              	.L62:
+ 175:Src/uavcan.c  ****     for (uint8_t i = 0; i < UNIQUE_ID_LENGTH_BYTES; i++)
+ 671              		.loc 1 175 0 is_stmt 0 discriminator 1
+ 672 000a 0F2B     		cmp	r3, #15
+ 673 000c FAD9     		bls	.L63
+ 674              	.LBE13:
+ 178:Src/uavcan.c  ****     }
+ 179:Src/uavcan.c  **** }
+ 675              		.loc 1 179 0 is_stmt 1
+ 676 000e 7047     		bx	lr
+ 677              		.cfi_endproc
+ 678              	.LFE77:
+ 680              		.section	.text.makeNodeInfoMessage,"ax",%progbits
+ 681              		.align	1
+ 682              		.global	makeNodeInfoMessage
+ 683              		.syntax unified
+ 684              		.thumb
+ 685              		.thumb_func
+ 686              		.fpu softvfp
+ 688              	makeNodeInfoMessage:
+ 689              	.LFB76:
+ 157:Src/uavcan.c  ****     memset(buffer, 0, UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE);
+ 690              		.loc 1 157 0
+ 691              		.cfi_startproc
+ 692              		@ args = 0, pretend = 0, frame = 8
+ 693              		@ frame_needed = 0, uses_anonymous_args = 0
+ 694              	.LVL75:
+ARM GAS  /tmp/cc56gSUN.s 			page 22
+
+
+ 695 0000 70B5     		push	{r4, r5, r6, lr}
+ 696              	.LCFI16:
+ 697              		.cfi_def_cfa_offset 16
+ 698              		.cfi_offset 4, -16
+ 699              		.cfi_offset 5, -12
+ 700              		.cfi_offset 6, -8
+ 701              		.cfi_offset 14, -4
+ 702 0002 82B0     		sub	sp, sp, #8
+ 703              	.LCFI17:
+ 704              		.cfi_def_cfa_offset 24
+ 705 0004 0546     		mov	r5, r0
+ 158:Src/uavcan.c  ****     makeNodeStatusMessage(buffer);
+ 706              		.loc 1 158 0
+ 707 0006 40F27912 		movw	r2, #377
+ 708 000a 0021     		movs	r1, #0
+ 709 000c FFF7FEFF 		bl	memset
+ 710              	.LVL76:
+ 159:Src/uavcan.c  ****    
+ 711              		.loc 1 159 0
+ 712 0010 2846     		mov	r0, r5
+ 713 0012 FFF7FEFF 		bl	makeNodeStatusMessage
+ 714              	.LVL77:
+ 161:Src/uavcan.c  ****     buffer[8] = APP_VERSION_MINOR;
+ 715              		.loc 1 161 0
+ 716 0016 6323     		movs	r3, #99
+ 717 0018 EB71     		strb	r3, [r5, #7]
+ 162:Src/uavcan.c  ****     buffer[9] = 1;                          // Optional field flags, VCS commit is set
+ 718              		.loc 1 162 0
+ 719 001a 2B72     		strb	r3, [r5, #8]
+ 163:Src/uavcan.c  ****     uint32_t u32 = GIT_HASH;
+ 720              		.loc 1 163 0
+ 721 001c 0123     		movs	r3, #1
+ 722 001e 6B72     		strb	r3, [r5, #9]
+ 164:Src/uavcan.c  ****     canardEncodeScalar(buffer, 80, 32, &u32); 
+ 723              		.loc 1 164 0
+ 724 0020 02AB     		add	r3, sp, #8
+ 725 0022 0F4A     		ldr	r2, .L66
+ 726 0024 43F8042D 		str	r2, [r3, #-4]!
+ 165:Src/uavcan.c  ****     
+ 727              		.loc 1 165 0
+ 728 0028 2022     		movs	r2, #32
+ 729 002a 5021     		movs	r1, #80
+ 730 002c 2846     		mov	r0, r5
+ 731 002e FFF7FEFF 		bl	canardEncodeScalar
+ 732              	.LVL78:
+ 167:Src/uavcan.c  ****     const size_t name_len = strlen(APP_NODE_NAME);
+ 733              		.loc 1 167 0
+ 734 0032 05F11800 		add	r0, r5, #24
+ 735 0036 FFF7FEFF 		bl	readUniqueID
+ 736              	.LVL79:
+ 169:Src/uavcan.c  ****     return 41 + name_len ;
+ 737              		.loc 1 169 0
+ 738 003a 0A4C     		ldr	r4, .L66+4
+ 739 003c 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 740 003e C5F82900 		str	r0, [r5, #41]	@ unaligned
+ 741 0042 C5F82D10 		str	r1, [r5, #45]	@ unaligned
+ 742 0046 C5F83120 		str	r2, [r5, #49]	@ unaligned
+ARM GAS  /tmp/cc56gSUN.s 			page 23
+
+
+ 743 004a C5F83530 		str	r3, [r5, #53]	@ unaligned
+ 744 004e 2288     		ldrh	r2, [r4]	@ unaligned
+ 745 0050 A378     		ldrb	r3, [r4, #2]	@ zero_extendqisi2
+ 746 0052 A5F83920 		strh	r2, [r5, #57]	@ unaligned
+ 747 0056 85F83B30 		strb	r3, [r5, #59]
+ 171:Src/uavcan.c  **** 
+ 748              		.loc 1 171 0
+ 749 005a 3C20     		movs	r0, #60
+ 750 005c 02B0     		add	sp, sp, #8
+ 751              	.LCFI18:
+ 752              		.cfi_def_cfa_offset 16
+ 753              		@ sp needed
+ 754 005e 70BD     		pop	{r4, r5, r6, pc}
+ 755              	.LVL80:
+ 756              	.L67:
+ 757              		.align	2
+ 758              	.L66:
+ 759 0060 FE0FDCBA 		.word	-1159983106
+ 760 0064 00000000 		.word	.LC3
+ 761              		.cfi_endproc
+ 762              	.LFE76:
+ 764              		.section	.text.getNodeInfoHandleCanard,"ax",%progbits
+ 765              		.align	1
+ 766              		.global	getNodeInfoHandleCanard
+ 767              		.syntax unified
+ 768              		.thumb
+ 769              		.thumb_func
+ 770              		.fpu softvfp
+ 772              	getNodeInfoHandleCanard:
+ 773              	.LFB69:
+  46:Src/uavcan.c  ****     uint8_t buffer[UAVCAN_GET_NODE_INFO_RESPONSE_MAX_SIZE];
+ 774              		.loc 1 46 0
+ 775              		.cfi_startproc
+ 776              		@ args = 0, pretend = 0, frame = 384
+ 777              		@ frame_needed = 0, uses_anonymous_args = 0
+ 778              	.LVL81:
+ 779 0000 30B5     		push	{r4, r5, lr}
+ 780              	.LCFI19:
+ 781              		.cfi_def_cfa_offset 12
+ 782              		.cfi_offset 4, -12
+ 783              		.cfi_offset 5, -8
+ 784              		.cfi_offset 14, -4
+ 785 0002 E7B0     		sub	sp, sp, #412
+ 786              	.LCFI20:
+ 787              		.cfi_def_cfa_offset 424
+ 788 0004 0446     		mov	r4, r0
+  48:Src/uavcan.c  ****     uint16_t len = makeNodeInfoMessage(buffer);
+ 789              		.loc 1 48 0
+ 790 0006 07AD     		add	r5, sp, #28
+ 791 0008 40F27912 		movw	r2, #377
+ 792 000c 0021     		movs	r1, #0
+ 793 000e 2846     		mov	r0, r5
+ 794              	.LVL82:
+ 795 0010 FFF7FEFF 		bl	memset
+ 796              	.LVL83:
+  49:Src/uavcan.c  ****     int result = canardRequestOrRespond(&g_canard,
+ 797              		.loc 1 49 0
+ARM GAS  /tmp/cc56gSUN.s 			page 24
+
+
+ 798 0014 2846     		mov	r0, r5
+ 799 0016 FFF7FEFF 		bl	makeNodeInfoMessage
+ 800              	.LVL84:
+  50:Src/uavcan.c  ****                                         transfer->source_node_id,
+ 801              		.loc 1 50 0
+ 802 001a E17E     		ldrb	r1, [r4, #27]	@ zero_extendqisi2
+ 803 001c 0590     		str	r0, [sp, #20]
+ 804 001e 0495     		str	r5, [sp, #16]
+ 805 0020 0023     		movs	r3, #0
+ 806 0022 0393     		str	r3, [sp, #12]
+ 807 0024 A37E     		ldrb	r3, [r4, #26]	@ zero_extendqisi2
+ 808 0026 0293     		str	r3, [sp, #8]
+ 809 0028 1934     		adds	r4, r4, #25
+ 810              	.LVL85:
+ 811 002a 0194     		str	r4, [sp, #4]
+ 812 002c 0123     		movs	r3, #1
+ 813 002e 0093     		str	r3, [sp]
+ 814 0030 04A3     		adr	r3, .L70+4
+ 815 0032 D3E90023 		ldrd	r2, [r3]
+ 816 0036 0248     		ldr	r0, .L70
+ 817              	.LVL86:
+ 818 0038 FFF7FEFF 		bl	canardRequestOrRespond
+ 819              	.LVL87:
+  59:Src/uavcan.c  **** 
+ 820              		.loc 1 59 0
+ 821 003c 67B0     		add	sp, sp, #412
+ 822              	.LCFI21:
+ 823              		.cfi_def_cfa_offset 12
+ 824              		@ sp needed
+ 825 003e 30BD     		pop	{r4, r5, pc}
+ 826              	.LVL88:
+ 827              	.L71:
+ 828              		.align	3
+ 829              	.L70:
+ 830 0040 00000000 		.word	.LANCHOR2
+ 831 0044 9E6AC421 		.word	566520478
+ 832 0048 818A46EE 		.word	-297366911
+ 833              		.cfi_endproc
+ 834              	.LFE69:
+ 836              		.section	.text.onTransferReceived,"ax",%progbits
+ 837              		.align	1
+ 838              		.global	onTransferReceived
+ 839              		.syntax unified
+ 840              		.thumb
+ 841              		.thumb_func
+ 842              		.fpu softvfp
+ 844              	onTransferReceived:
+ 845              	.LFB68:
+  38:Src/uavcan.c  ****     if ((transfer->transfer_type == CanardTransferTypeRequest) && (transfer->data_type_id == UAVCAN
+ 846              		.loc 1 38 0
+ 847              		.cfi_startproc
+ 848              		@ args = 0, pretend = 0, frame = 0
+ 849              		@ frame_needed = 0, uses_anonymous_args = 0
+ 850              	.LVL89:
+ 851 0000 08B5     		push	{r3, lr}
+ 852              	.LCFI22:
+ 853              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/cc56gSUN.s 			page 25
+
+
+ 854              		.cfi_offset 3, -8
+ 855              		.cfi_offset 14, -4
+  39:Src/uavcan.c  ****     {
+ 856              		.loc 1 39 0
+ 857 0002 0B7E     		ldrb	r3, [r1, #24]	@ zero_extendqisi2
+ 858 0004 012B     		cmp	r3, #1
+ 859 0006 00D0     		beq	.L75
+ 860              	.LVL90:
+ 861              	.L72:
+  43:Src/uavcan.c  **** 
+ 862              		.loc 1 43 0
+ 863 0008 08BD     		pop	{r3, pc}
+ 864              	.LVL91:
+ 865              	.L75:
+  39:Src/uavcan.c  ****     {
+ 866              		.loc 1 39 0 discriminator 1
+ 867 000a CB8A     		ldrh	r3, [r1, #22]
+ 868 000c 012B     		cmp	r3, #1
+ 869 000e FBD1     		bne	.L72
+ 870 0010 0846     		mov	r0, r1
+ 871              	.LVL92:
+  41:Src/uavcan.c  ****     } 
+ 872              		.loc 1 41 0
+ 873 0012 FFF7FEFF 		bl	getNodeInfoHandleCanard
+ 874              	.LVL93:
+  43:Src/uavcan.c  **** 
+ 875              		.loc 1 43 0
+ 876 0016 F7E7     		b	.L72
+ 877              		.cfi_endproc
+ 878              	.LFE68:
+ 880              		.section	.text.publishCircuitStatus,"ax",%progbits
+ 881              		.align	1
+ 882              		.global	publishCircuitStatus
+ 883              		.syntax unified
+ 884              		.thumb
+ 885              		.thumb_func
+ 886              		.fpu softvfp
+ 888              	publishCircuitStatus:
+ 889              	.LFB78:
+ 180:Src/uavcan.c  **** 
+ 181:Src/uavcan.c  **** 
+ 182:Src/uavcan.c  **** 
+ 183:Src/uavcan.c  **** void publishCircuitStatus(void)
+ 184:Src/uavcan.c  **** {
+ 890              		.loc 1 184 0
+ 891              		.cfi_startproc
+ 892              		@ args = 0, pretend = 0, frame = 8
+ 893              		@ frame_needed = 0, uses_anonymous_args = 0
+ 894 0000 10B5     		push	{r4, lr}
+ 895              	.LCFI23:
+ 896              		.cfi_def_cfa_offset 8
+ 897              		.cfi_offset 4, -8
+ 898              		.cfi_offset 14, -4
+ 899 0002 88B0     		sub	sp, sp, #32
+ 900              	.LCFI24:
+ 901              		.cfi_def_cfa_offset 40
+ 185:Src/uavcan.c  ****     static int step = 0;
+ARM GAS  /tmp/cc56gSUN.s 			page 26
+
+
+ 186:Src/uavcan.c  ****     step++;
+ 902              		.loc 1 186 0
+ 903 0004 1C4A     		ldr	r2, .L80+8
+ 904 0006 1368     		ldr	r3, [r2]
+ 905 0008 0133     		adds	r3, r3, #1
+ 906 000a 1360     		str	r3, [r2]
+ 187:Src/uavcan.c  ****     if(step == 256) 
+ 907              		.loc 1 187 0
+ 908 000c B3F5807F 		cmp	r3, #256
+ 909 0010 27D0     		beq	.L79
+ 910              	.L77:
+ 188:Src/uavcan.c  ****     {
+ 189:Src/uavcan.c  ****         step = 0;
+ 190:Src/uavcan.c  ****     }
+ 191:Src/uavcan.c  ****     uint8_t buffer[UAVCAN_POWER_CIRCUITSTATUS_MESSAGESIZE];
+ 192:Src/uavcan.c  ****     memset(buffer,0x00,UAVCAN_POWER_CIRCUITSTATUS_MESSAGESIZE);
+ 911              		.loc 1 192 0
+ 912 0012 06AC     		add	r4, sp, #24
+ 913 0014 0021     		movs	r1, #0
+ 914 0016 0691     		str	r1, [sp, #24]
+ 915 0018 CDF81B10 		str	r1, [sp, #27]	@ unaligned
+ 916              	.LVL94:
+ 193:Src/uavcan.c  ****     float vlot=32.665;
+ 194:Src/uavcan.c  **** 
+ 195:Src/uavcan.c  ****     static uint16_t circuit_id = 10010;
+ 196:Src/uavcan.c  ****     static uint16_t circuit_v = 0x4b66;
+ 197:Src/uavcan.c  ****     static uint16_t circuit_c = 200;
+ 198:Src/uavcan.c  ****     static uint8_t circuit_flage= 2;
+ 199:Src/uavcan.c  ****     static uint8_t  transfer_id= 0;
+ 200:Src/uavcan.c  ****     static float a=0.05;
+ 201:Src/uavcan.c  ****     canardEncodeScalar(buffer, 0, 16, &circuit_id);
+ 917              		.loc 1 201 0
+ 918 001c 174B     		ldr	r3, .L80+12
+ 919 001e 1022     		movs	r2, #16
+ 920 0020 2046     		mov	r0, r4
+ 921 0022 FFF7FEFF 		bl	canardEncodeScalar
+ 922              	.LVL95:
+ 202:Src/uavcan.c  ****     canardEncodeScalar(buffer, 16, 16, &circuit_v);
+ 923              		.loc 1 202 0
+ 924 0026 164B     		ldr	r3, .L80+16
+ 925 0028 1022     		movs	r2, #16
+ 926 002a 1146     		mov	r1, r2
+ 927 002c 2046     		mov	r0, r4
+ 928 002e FFF7FEFF 		bl	canardEncodeScalar
+ 929              	.LVL96:
+ 203:Src/uavcan.c  ****     canardEncodeScalar(buffer, 48, 8, &circuit_flage);
+ 930              		.loc 1 203 0
+ 931 0032 144B     		ldr	r3, .L80+20
+ 932 0034 0822     		movs	r2, #8
+ 933 0036 3021     		movs	r1, #48
+ 934 0038 2046     		mov	r0, r4
+ 935 003a FFF7FEFF 		bl	canardEncodeScalar
+ 936              	.LVL97:
+ 204:Src/uavcan.c  ****     canardBroadcast(&g_canard, 
+ 937              		.loc 1 204 0
+ 938 003e 0723     		movs	r3, #7
+ 939 0040 0493     		str	r3, [sp, #16]
+ARM GAS  /tmp/cc56gSUN.s 			page 27
+
+
+ 940 0042 0394     		str	r4, [sp, #12]
+ 941 0044 1823     		movs	r3, #24
+ 942 0046 0293     		str	r3, [sp, #8]
+ 943 0048 0F4B     		ldr	r3, .L80+24
+ 944 004a 0193     		str	r3, [sp, #4]
+ 945 004c 40F24343 		movw	r3, #1091
+ 946 0050 0093     		str	r3, [sp]
+ 947 0052 07A3     		adr	r3, .L80
+ 948 0054 D3E90023 		ldrd	r2, [r3]
+ 949 0058 0C48     		ldr	r0, .L80+28
+ 950 005a FFF7FEFF 		bl	canardBroadcast
+ 951              	.LVL98:
+ 205:Src/uavcan.c  ****                     UAVCAN_POWER_CIRCUITSTATUS_SIGNATURE,
+ 206:Src/uavcan.c  ****                     UAVCAN_POWER_CIRCUITSTATUS_ID,
+ 207:Src/uavcan.c  ****                     &transfer_id,
+ 208:Src/uavcan.c  ****                     CANARD_TRANSFER_PRIORITY_LOW,
+ 209:Src/uavcan.c  ****                     &buffer[0], 
+ 210:Src/uavcan.c  ****                     7);
+ 211:Src/uavcan.c  **** }
+ 952              		.loc 1 211 0
+ 953 005e 08B0     		add	sp, sp, #32
+ 954              	.LCFI25:
+ 955              		.cfi_remember_state
+ 956              		.cfi_def_cfa_offset 8
+ 957              		@ sp needed
+ 958 0060 10BD     		pop	{r4, pc}
+ 959              	.LVL99:
+ 960              	.L79:
+ 961              	.LCFI26:
+ 962              		.cfi_restore_state
+ 189:Src/uavcan.c  ****     }
+ 963              		.loc 1 189 0
+ 964 0062 1346     		mov	r3, r2
+ 965 0064 0022     		movs	r2, #0
+ 966 0066 1A60     		str	r2, [r3]
+ 967 0068 D3E7     		b	.L77
+ 968              	.L81:
+ 969 006a 00BFAFF3 		.align	3
+ 969      0080
+ 970              	.L80:
+ 971 0070 15A1DD0D 		.word	232628501
+ 972 0074 3DD31383 		.word	-2095852739
+ 973 0078 00000000 		.word	.LANCHOR5
+ 974 007c 00000000 		.word	.LANCHOR6
+ 975 0080 00000000 		.word	.LANCHOR7
+ 976 0084 00000000 		.word	.LANCHOR8
+ 977 0088 00000000 		.word	.LANCHOR9
+ 978 008c 00000000 		.word	.LANCHOR2
+ 979              		.cfi_endproc
+ 980              	.LFE78:
+ 982              		.global	__aeabi_ui2f
+ 983              		.section	.text.publishSinValue,"ax",%progbits
+ 984              		.align	1
+ 985              		.global	publishSinValue
+ 986              		.syntax unified
+ 987              		.thumb
+ 988              		.thumb_func
+ARM GAS  /tmp/cc56gSUN.s 			page 28
+
+
+ 989              		.fpu softvfp
+ 991              	publishSinValue:
+ 992              	.LFB79:
+ 212:Src/uavcan.c  **** 
+ 213:Src/uavcan.c  **** void publishSinValue(void)
+ 214:Src/uavcan.c  **** {
+ 993              		.loc 1 214 0
+ 994              		.cfi_startproc
+ 995              		@ args = 0, pretend = 0, frame = 72
+ 996              		@ frame_needed = 0, uses_anonymous_args = 0
+ 997 0000 10B5     		push	{r4, lr}
+ 998              	.LCFI27:
+ 999              		.cfi_def_cfa_offset 8
+ 1000              		.cfi_offset 4, -8
+ 1001              		.cfi_offset 14, -4
+ 1002 0002 98B0     		sub	sp, sp, #96
+ 1003              	.LCFI28:
+ 1004              		.cfi_def_cfa_offset 104
+ 215:Src/uavcan.c  ****     static int step = 0;
+ 216:Src/uavcan.c  ****     uint8_t buffer[UAVCAN_PROTOCOL_DEBUG_KEYVALUE_MESSAGE_SIZE];
+ 217:Src/uavcan.c  ****     memset(buffer,0x00,UAVCAN_PROTOCOL_DEBUG_KEYVALUE_MESSAGE_SIZE);
+ 1005              		.loc 1 217 0
+ 1006 0004 3E22     		movs	r2, #62
+ 1007 0006 0021     		movs	r1, #0
+ 1008 0008 08A8     		add	r0, sp, #32
+ 1009 000a FFF7FEFF 		bl	memset
+ 1010              	.LVL100:
+ 218:Src/uavcan.c  ****     step++;
+ 1011              		.loc 1 218 0
+ 1012 000e 1C4A     		ldr	r2, .L86+8
+ 1013 0010 1368     		ldr	r3, [r2]
+ 1014 0012 0133     		adds	r3, r3, #1
+ 1015 0014 1360     		str	r3, [r2]
+ 219:Src/uavcan.c  ****     if(step == 256) 
+ 1016              		.loc 1 219 0
+ 1017 0016 B3F5807F 		cmp	r3, #256
+ 1018 001a 27D0     		beq	.L85
+ 1019              	.L83:
+ 220:Src/uavcan.c  ****     {
+ 221:Src/uavcan.c  ****         step = 0;
+ 222:Src/uavcan.c  ****     }
+ 223:Src/uavcan.c  ****     float val = sine_wave[step];
+ 1020              		.loc 1 223 0
+ 1021 001c 184B     		ldr	r3, .L86+8
+ 1022 001e 1B68     		ldr	r3, [r3]
+ 1023 0020 184A     		ldr	r2, .L86+12
+ 1024 0022 D05C     		ldrb	r0, [r2, r3]	@ zero_extendqisi2
+ 1025 0024 FFF7FEFF 		bl	__aeabi_ui2f
+ 1026              	.LVL101:
+ 1027 0028 18AB     		add	r3, sp, #96
+ 1028 002a 43F8440D 		str	r0, [r3, #-68]!	@ float
+ 224:Src/uavcan.c  ****     static uint8_t transfer_id = 0;
+ 225:Src/uavcan.c  ****     canardEncodeScalar(buffer, 0, 32, &val);
+ 1029              		.loc 1 225 0
+ 1030 002e 08AC     		add	r4, sp, #32
+ 1031 0030 2022     		movs	r2, #32
+ 1032 0032 0021     		movs	r1, #0
+ARM GAS  /tmp/cc56gSUN.s 			page 29
+
+
+ 1033 0034 2046     		mov	r0, r4
+ 1034 0036 FFF7FEFF 		bl	canardEncodeScalar
+ 1035              	.LVL102:
+ 226:Src/uavcan.c  ****     memcpy(&buffer[4], "sin", 3);    
+ 1036              		.loc 1 226 0
+ 1037 003a 134B     		ldr	r3, .L86+16
+ 1038 003c 1B68     		ldr	r3, [r3]
+ 1039 003e ADF82430 		strh	r3, [sp, #36]	@ movhi
+ 1040 0042 1B0C     		lsrs	r3, r3, #16
+ 1041 0044 8DF82630 		strb	r3, [sp, #38]
+ 227:Src/uavcan.c  ****     canardBroadcast(&g_canard, 
+ 1042              		.loc 1 227 0
+ 1043 0048 0723     		movs	r3, #7
+ 1044 004a 0493     		str	r3, [sp, #16]
+ 1045 004c 0394     		str	r4, [sp, #12]
+ 1046 004e 1823     		movs	r3, #24
+ 1047 0050 0293     		str	r3, [sp, #8]
+ 1048 0052 0E4B     		ldr	r3, .L86+20
+ 1049 0054 0193     		str	r3, [sp, #4]
+ 1050 0056 43F6F273 		movw	r3, #16370
+ 1051 005a 0093     		str	r3, [sp]
+ 1052 005c 06A3     		adr	r3, .L86
+ 1053 005e D3E90023 		ldrd	r2, [r3]
+ 1054 0062 0B48     		ldr	r0, .L86+24
+ 1055 0064 FFF7FEFF 		bl	canardBroadcast
+ 1056              	.LVL103:
+ 228:Src/uavcan.c  ****                     UAVCAN_PROTOCOL_DEBUG_KEYVALUE_SIGNATURE,
+ 229:Src/uavcan.c  ****                     UAVCAN_PROTOCOL_DEBUG_KEYVALUE_ID,
+ 230:Src/uavcan.c  ****                     &transfer_id,
+ 231:Src/uavcan.c  ****                     CANARD_TRANSFER_PRIORITY_LOW,
+ 232:Src/uavcan.c  ****                     &buffer[0], 
+ 233:Src/uavcan.c  ****                     7);
+ 234:Src/uavcan.c  **** }
+ 1057              		.loc 1 234 0
+ 1058 0068 18B0     		add	sp, sp, #96
+ 1059              	.LCFI29:
+ 1060              		.cfi_remember_state
+ 1061              		.cfi_def_cfa_offset 8
+ 1062              		@ sp needed
+ 1063 006a 10BD     		pop	{r4, pc}
+ 1064              	.L85:
+ 1065              	.LCFI30:
+ 1066              		.cfi_restore_state
+ 221:Src/uavcan.c  ****     }
+ 1067              		.loc 1 221 0
+ 1068 006c 1346     		mov	r3, r2
+ 1069 006e 0022     		movs	r2, #0
+ 1070 0070 1A60     		str	r2, [r3]
+ 1071 0072 D3E7     		b	.L83
+ 1072              	.L87:
+ 1073 0074 AFF30080 		.align	3
+ 1074              	.L86:
+ 1075 0078 E08AC9E0 		.word	-523662624
+ 1076 007c D6252FE0 		.word	-533781034
+ 1077 0080 00000000 		.word	.LANCHOR10
+ 1078 0084 00000000 		.word	.LANCHOR11
+ 1079 0088 00000000 		.word	.LC4
+ARM GAS  /tmp/cc56gSUN.s 			page 30
+
+
+ 1080 008c 00000000 		.word	.LANCHOR12
+ 1081 0090 00000000 		.word	.LANCHOR2
+ 1082              		.cfi_endproc
+ 1083              	.LFE79:
+ 1085              		.section	.text.publishBattInfo,"ax",%progbits
+ 1086              		.align	1
+ 1087              		.global	publishBattInfo
+ 1088              		.syntax unified
+ 1089              		.thumb
+ 1090              		.thumb_func
+ 1091              		.fpu softvfp
+ 1093              	publishBattInfo:
+ 1094              	.LFB80:
+ 235:Src/uavcan.c  **** void publishBattInfo(void)
+ 236:Src/uavcan.c  **** {
+ 1095              		.loc 1 236 0
+ 1096              		.cfi_startproc
+ 1097              		@ args = 0, pretend = 0, frame = 80
+ 1098              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1099 0000 30B5     		push	{r4, r5, lr}
+ 1100              	.LCFI31:
+ 1101              		.cfi_def_cfa_offset 12
+ 1102              		.cfi_offset 4, -12
+ 1103              		.cfi_offset 5, -8
+ 1104              		.cfi_offset 14, -4
+ 1105 0002 9BB0     		sub	sp, sp, #108
+ 1106              	.LCFI32:
+ 1107              		.cfi_def_cfa_offset 120
+ 237:Src/uavcan.c  ****     int8_t buffer[UAVCAN_POWER_BATTERINFO_MESSAGESIZE];
+ 238:Src/uavcan.c  ****     memset(buffer,0x00,UAVCAN_POWER_BATTERINFO_MESSAGESIZE);
+ 1108              		.loc 1 238 0
+ 1109 0004 0CAC     		add	r4, sp, #48
+ 1110 0006 3725     		movs	r5, #55
+ 1111 0008 2A46     		mov	r2, r5
+ 1112 000a 0021     		movs	r1, #0
+ 1113 000c 2046     		mov	r0, r4
+ 1114 000e FFF7FEFF 		bl	memset
+ 1115              	.LVL104:
+ 239:Src/uavcan.c  ****     float en_temperature=15.6;
+ 240:Src/uavcan.c  ****     float en_volt=14.8;
+ 241:Src/uavcan.c  ****     float en_current=0.1;
+ 242:Src/uavcan.c  ****     float en_mah=2200;
+ 243:Src/uavcan.c  ****     float en_wh=48;
+ 244:Src/uavcan.c  ****     
+ 245:Src/uavcan.c  ****     uint8_t state_of_health_pct=127;
+ 1116              		.loc 1 245 0
+ 1117 0012 7F23     		movs	r3, #127
+ 1118 0014 8DF82F30 		strb	r3, [sp, #47]
+ 1119              	.LVL105:
+ 246:Src/uavcan.c  ****     uint8_t state_of_charge_pct=127;
+ 247:Src/uavcan.c  ****     uint8_t state_of_charge_pct_stdev=127;
+ 248:Src/uavcan.c  **** 
+ 249:Src/uavcan.c  **** 
+ 250:Src/uavcan.c  ****     uint16_t temperature= canardConvertNativeFloatToFloat16(en_temperature);
+ 1120              		.loc 1 250 0
+ 1121 0018 3548     		ldr	r0, .L90+8
+ 1122 001a FFF7FEFF 		bl	canardConvertNativeFloatToFloat16
+ARM GAS  /tmp/cc56gSUN.s 			page 31
+
+
+ 1123              	.LVL106:
+ 1124 001e ADF82C00 		strh	r0, [sp, #44]	@ movhi
+ 251:Src/uavcan.c  ****     uint16_t voltage = 0x4b66;
+ 1125              		.loc 1 251 0
+ 1126 0022 44F66633 		movw	r3, #19302
+ 1127 0026 ADF82A30 		strh	r3, [sp, #42]	@ movhi
+ 252:Src/uavcan.c  ****     uint16_t current = 0x4b66;
+ 1128              		.loc 1 252 0
+ 1129 002a ADF82830 		strh	r3, [sp, #40]	@ movhi
+ 1130              	.LVL107:
+ 253:Src/uavcan.c  ****     uint16_t average_power_10sec= 0x4b66;
+ 254:Src/uavcan.c  ****     uint16_t remaining_capacity_wh= 0x4b66;
+ 255:Src/uavcan.c  ****     uint16_t full_charge_capacity_wh= 0x4b66;
+ 256:Src/uavcan.c  ****     uint16_t hours_to_full_charge= 0x4b66;
+ 257:Src/uavcan.c  ****     uint8_t  battery_id=0;
+ 1131              		.loc 1 257 0
+ 1132 002e 0021     		movs	r1, #0
+ 1133 0030 8DF82710 		strb	r1, [sp, #39]
+ 258:Src/uavcan.c  ****     uint16_t  transfer_id= 0;
+ 1134              		.loc 1 258 0
+ 1135 0034 ADF82410 		strh	r1, [sp, #36]	@ movhi
+ 259:Src/uavcan.c  ****     uint32_t model_instance_id =0x00;
+ 1136              		.loc 1 259 0
+ 1137 0038 0891     		str	r1, [sp, #32]
+ 1138              	.LVL108:
+ 260:Src/uavcan.c  ****     char*modelname ="skyyu";
+ 261:Src/uavcan.c  ****     uint8_t status_flags=0x01;
+ 1139              		.loc 1 261 0
+ 1140 003a 0123     		movs	r3, #1
+ 1141 003c 8DF81F30 		strb	r3, [sp, #31]
+ 262:Src/uavcan.c  ****     canardEncodeScalar(buffer, 0, 16, &temperature);
+ 1142              		.loc 1 262 0
+ 1143 0040 0BAB     		add	r3, sp, #44
+ 1144 0042 1022     		movs	r2, #16
+ 1145 0044 2046     		mov	r0, r4
+ 1146 0046 FFF7FEFF 		bl	canardEncodeScalar
+ 1147              	.LVL109:
+ 263:Src/uavcan.c  ****     canardEncodeScalar(buffer, 16, 16, &voltage);
+ 1148              		.loc 1 263 0
+ 1149 004a 0DF12A03 		add	r3, sp, #42
+ 1150 004e 1022     		movs	r2, #16
+ 1151 0050 1146     		mov	r1, r2
+ 1152 0052 2046     		mov	r0, r4
+ 1153 0054 FFF7FEFF 		bl	canardEncodeScalar
+ 1154              	.LVL110:
+ 264:Src/uavcan.c  ****     canardEncodeScalar(buffer, 32, 16, &current);
+ 1155              		.loc 1 264 0
+ 1156 0058 0AAB     		add	r3, sp, #40
+ 1157 005a 1022     		movs	r2, #16
+ 1158 005c 2021     		movs	r1, #32
+ 1159 005e 2046     		mov	r0, r4
+ 1160 0060 FFF7FEFF 		bl	canardEncodeScalar
+ 1161              	.LVL111:
+ 265:Src/uavcan.c  ****     //canardEncodeScalar(buffer, 48, 16, &current);
+ 266:Src/uavcan.c  ****     //canardEncodeScalar(buffer, 64, 16, &current);
+ 267:Src/uavcan.c  ****     //canardEncodeScalar(buffer, 80, 16, &current);
+ 268:Src/uavcan.c  ****   //  canardEncodeScalar(buffer, 96, 16, &current);
+ARM GAS  /tmp/cc56gSUN.s 			page 32
+
+
+ 269:Src/uavcan.c  **** 
+ 270:Src/uavcan.c  ****     canardEncodeScalar(buffer, 112, 11, &status_flags);
+ 1162              		.loc 1 270 0
+ 1163 0064 0DF11F03 		add	r3, sp, #31
+ 1164 0068 0B22     		movs	r2, #11
+ 1165 006a 7021     		movs	r1, #112
+ 1166 006c 2046     		mov	r0, r4
+ 1167 006e FFF7FEFF 		bl	canardEncodeScalar
+ 1168              	.LVL112:
+ 271:Src/uavcan.c  **** 
+ 272:Src/uavcan.c  ****     canardEncodeScalar(buffer, 123, 7, &state_of_health_pct);
+ 1169              		.loc 1 272 0
+ 1170 0072 0DF12F03 		add	r3, sp, #47
+ 1171 0076 0722     		movs	r2, #7
+ 1172 0078 7B21     		movs	r1, #123
+ 1173 007a 2046     		mov	r0, r4
+ 1174 007c FFF7FEFF 		bl	canardEncodeScalar
+ 1175              	.LVL113:
+ 273:Src/uavcan.c  ****      
+ 274:Src/uavcan.c  ****     canardEncodeScalar(buffer, 130, 7, &state_of_health_pct);
+ 1176              		.loc 1 274 0
+ 1177 0080 0DF12F03 		add	r3, sp, #47
+ 1178 0084 0722     		movs	r2, #7
+ 1179 0086 8221     		movs	r1, #130
+ 1180 0088 2046     		mov	r0, r4
+ 1181 008a FFF7FEFF 		bl	canardEncodeScalar
+ 1182              	.LVL114:
+ 275:Src/uavcan.c  ****      
+ 276:Src/uavcan.c  ****     canardEncodeScalar(buffer, 137, 7, &state_of_health_pct);
+ 1183              		.loc 1 276 0
+ 1184 008e 0DF12F03 		add	r3, sp, #47
+ 1185 0092 0722     		movs	r2, #7
+ 1186 0094 8921     		movs	r1, #137
+ 1187 0096 2046     		mov	r0, r4
+ 1188 0098 FFF7FEFF 		bl	canardEncodeScalar
+ 1189              	.LVL115:
+ 277:Src/uavcan.c  **** 
+ 278:Src/uavcan.c  ****     canardEncodeScalar(buffer, 144, 8, &battery_id);
+ 1190              		.loc 1 278 0
+ 1191 009c 0DF12703 		add	r3, sp, #39
+ 1192 00a0 0822     		movs	r2, #8
+ 1193 00a2 9021     		movs	r1, #144
+ 1194 00a4 2046     		mov	r0, r4
+ 1195 00a6 FFF7FEFF 		bl	canardEncodeScalar
+ 1196              	.LVL116:
+ 279:Src/uavcan.c  ****     canardEncodeScalar(buffer, 152, 32, &model_instance_id);
+ 1197              		.loc 1 279 0
+ 1198 00aa 08AB     		add	r3, sp, #32
+ 1199 00ac 2022     		movs	r2, #32
+ 1200 00ae 9821     		movs	r1, #152
+ 1201 00b0 2046     		mov	r0, r4
+ 1202 00b2 FFF7FEFF 		bl	canardEncodeScalar
+ 1203              	.LVL117:
+ 280:Src/uavcan.c  ****     canardEncodeScalar(buffer, 184, 40, modelname);
+ 1204              		.loc 1 280 0
+ 1205 00b6 0F4B     		ldr	r3, .L90+12
+ 1206 00b8 2822     		movs	r2, #40
+ARM GAS  /tmp/cc56gSUN.s 			page 33
+
+
+ 1207 00ba B821     		movs	r1, #184
+ 1208 00bc 2046     		mov	r0, r4
+ 1209 00be FFF7FEFF 		bl	canardEncodeScalar
+ 1210              	.LVL118:
+ 281:Src/uavcan.c  ****     canardBroadcast(&g_canard, 
+ 1211              		.loc 1 281 0
+ 1212 00c2 0495     		str	r5, [sp, #16]
+ 1213 00c4 0394     		str	r4, [sp, #12]
+ 1214 00c6 1823     		movs	r3, #24
+ 1215 00c8 0293     		str	r3, [sp, #8]
+ 1216 00ca 09AB     		add	r3, sp, #36
+ 1217 00cc 0193     		str	r3, [sp, #4]
+ 1218 00ce 40F24443 		movw	r3, #1092
+ 1219 00d2 0093     		str	r3, [sp]
+ 1220 00d4 04A3     		adr	r3, .L90
+ 1221 00d6 D3E90023 		ldrd	r2, [r3]
+ 1222 00da 0748     		ldr	r0, .L90+16
+ 1223 00dc FFF7FEFF 		bl	canardBroadcast
+ 1224              	.LVL119:
+ 282:Src/uavcan.c  ****                     UAVCAN_POWER_BATTERINFO_SIGNATUR,
+ 283:Src/uavcan.c  ****                     UAVCAN_POWER_BATTERINFO_ID,
+ 284:Src/uavcan.c  ****                     &transfer_id,
+ 285:Src/uavcan.c  ****                     CANARD_TRANSFER_PRIORITY_LOW,
+ 286:Src/uavcan.c  ****                     &buffer[0], 
+ 287:Src/uavcan.c  ****                     55);
+ 288:Src/uavcan.c  **** }...
+ 1225              		.loc 1 288 0
+ 1226 00e0 1BB0     		add	sp, sp, #108
+ 1227              	.LCFI33:
+ 1228              		.cfi_def_cfa_offset 12
+ 1229              		@ sp needed
+ 1230 00e2 30BD     		pop	{r4, r5, pc}
+ 1231              	.L91:
+ 1232 00e4 AFF30080 		.align	3
+ 1233              	.L90:
+ 1234 00e8 6619718A 		.word	-1972299418
+ 1235 00ec 54269C24 		.word	614213204
+ 1236 00f0 9A997941 		.word	1098488218
+ 1237 00f4 00000000 		.word	.LC5
+ 1238 00f8 00000000 		.word	.LANCHOR2
+ 1239              		.cfi_endproc
+ 1240              	.LFE80:
+ 1242              		.section	.text.publishCanard,"ax",%progbits
+ 1243              		.align	1
+ 1244              		.global	publishCanard
+ 1245              		.syntax unified
+ 1246              		.thumb
+ 1247              		.thumb_func
+ 1248              		.fpu softvfp
+ 1250              	publishCanard:
+ 1251              	.LFB74:
+ 134:Src/uavcan.c  **** {  
+ 1252              		.loc 1 134 0
+ 1253              		.cfi_startproc
+ 1254              		@ args = 0, pretend = 0, frame = 0
+ 1255              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1256 0000 08B5     		push	{r3, lr}
+ARM GAS  /tmp/cc56gSUN.s 			page 34
+
+
+ 1257              	.LCFI34:
+ 1258              		.cfi_def_cfa_offset 8
+ 1259              		.cfi_offset 3, -8
+ 1260              		.cfi_offset 14, -4
+ 136:Src/uavcan.c  ****     if(HAL_GetTick() < publish_time + PUBLISHER_PERIOD_mS) {return;} // rate limiting
+ 1261              		.loc 1 136 0
+ 1262 0002 FFF7FEFF 		bl	HAL_GetTick
+ 1263              	.LVL120:
+ 1264 0006 064B     		ldr	r3, .L96
+ 1265 0008 1B68     		ldr	r3, [r3]
+ 1266 000a C833     		adds	r3, r3, #200
+ 1267 000c 9842     		cmp	r0, r3
+ 1268 000e 00D2     		bcs	.L95
+ 1269              	.L92:
+ 143:Src/uavcan.c  **** }
+ 1270              		.loc 1 143 0
+ 1271 0010 08BD     		pop	{r3, pc}
+ 1272              	.L95:
+ 137:Src/uavcan.c  ****     publish_time = HAL_GetTick();
+ 1273              		.loc 1 137 0
+ 1274 0012 FFF7FEFF 		bl	HAL_GetTick
+ 1275              	.LVL121:
+ 1276 0016 024B     		ldr	r3, .L96
+ 1277 0018 1860     		str	r0, [r3]
+ 140:Src/uavcan.c  ****     publishBattInfo();
+ 1278              		.loc 1 140 0
+ 1279 001a FFF7FEFF 		bl	publishBattInfo
+ 1280              	.LVL122:
+ 1281 001e F7E7     		b	.L92
+ 1282              	.L97:
+ 1283              		.align	2
+ 1284              	.L96:
+ 1285 0020 00000000 		.word	.LANCHOR13
+ 1286              		.cfi_endproc
+ 1287              	.LFE74:
+ 1289              		.global	rc_pwm
+ 1290              		.section	.bss.g_canard,"aw",%nobits
+ 1291              		.align	2
+ 1292              		.set	.LANCHOR2,. + 0
+ 1295              	g_canard:
+ 1296 0000 00000000 		.space	36
+ 1296      00000000 
+ 1296      00000000 
+ 1296      00000000 
+ 1296      00000000 
+ 1297              		.section	.bss.g_canard_memory_pool,"aw",%nobits
+ 1298              		.align	2
+ 1299              		.set	.LANCHOR1,. + 0
+ 1302              	g_canard_memory_pool:
+ 1303 0000 00000000 		.space	1024
+ 1303      00000000 
+ 1303      00000000 
+ 1303      00000000 
+ 1303      00000000 
+ 1304              		.section	.bss.publish_time.8084,"aw",%nobits
+ 1305              		.align	2
+ 1306              		.set	.LANCHOR13,. + 0
+ARM GAS  /tmp/cc56gSUN.s 			page 35
+
+
+ 1309              	publish_time.8084:
+ 1310 0000 00000000 		.space	4
+ 1311              		.section	.bss.rc_pwm,"aw",%nobits
+ 1312              		.align	2
+ 1315              	rc_pwm:
+ 1316 0000 00000000 		.space	12
+ 1316      00000000 
+ 1316      00000000 
+ 1317              		.section	.bss.spin_time.8076,"aw",%nobits
+ 1318              		.align	2
+ 1319              		.set	.LANCHOR3,. + 0
+ 1322              	spin_time.8076:
+ 1323 0000 00000000 		.space	4
+ 1324              		.section	.bss.step.8110,"aw",%nobits
+ 1325              		.align	2
+ 1326              		.set	.LANCHOR5,. + 0
+ 1329              	step.8110:
+ 1330 0000 00000000 		.space	4
+ 1331              		.section	.bss.step.8122,"aw",%nobits
+ 1332              		.align	2
+ 1333              		.set	.LANCHOR10,. + 0
+ 1336              	step.8122:
+ 1337 0000 00000000 		.space	4
+ 1338              		.section	.bss.transfer_id.8078,"aw",%nobits
+ 1339              		.set	.LANCHOR4,. + 0
+ 1342              	transfer_id.8078:
+ 1343 0000 00       		.space	1
+ 1344              		.section	.bss.transfer_id.8117,"aw",%nobits
+ 1345              		.set	.LANCHOR9,. + 0
+ 1348              	transfer_id.8117:
+ 1349 0000 00       		.space	1
+ 1350              		.section	.bss.transfer_id.8125,"aw",%nobits
+ 1351              		.set	.LANCHOR12,. + 0
+ 1354              	transfer_id.8125:
+ 1355 0000 00       		.space	1
+ 1356              		.section	.data.circuit_flage.8116,"aw",%progbits
+ 1357              		.set	.LANCHOR8,. + 0
+ 1360              	circuit_flage.8116:
+ 1361 0000 02       		.byte	2
+ 1362              		.section	.data.circuit_id.8113,"aw",%progbits
+ 1363              		.align	1
+ 1364              		.set	.LANCHOR6,. + 0
+ 1367              	circuit_id.8113:
+ 1368 0000 1A27     		.short	10010
+ 1369              		.section	.data.circuit_v.8114,"aw",%progbits
+ 1370              		.align	1
+ 1371              		.set	.LANCHOR7,. + 0
+ 1374              	circuit_v.8114:
+ 1375 0000 664B     		.short	19302
+ 1376              		.section	.rodata.__func__.5968,"a",%progbits
+ 1377              		.align	2
+ 1378              		.set	.LANCHOR0,. + 0
+ 1381              	__func__.5968:
+ 1382 0000 63616E61 		.ascii	"canardSTM32ComputeCANTimings\000"
+ 1382      72645354 
+ 1382      4D333243 
+ 1382      6F6D7075 
+ARM GAS  /tmp/cc56gSUN.s 			page 36
+
+
+ 1382      74654341 
+ 1383              		.section	.rodata.makeNodeInfoMessage.str1.4,"aMS",%progbits,1
+ 1384              		.align	2
+ 1385              	.LC3:
+ 1386 0000 736B7979 		.ascii	"skyyu.battermonitor\000"
+ 1386      752E6261 
+ 1386      74746572 
+ 1386      6D6F6E69 
+ 1386      746F7200 
+ 1387              		.section	.rodata.publishBattInfo.str1.4,"aMS",%progbits,1
+ 1388              		.align	2
+ 1389              	.LC5:
+ 1390 0000 736B7979 		.ascii	"skyyu\000"
+ 1390      7500
+ 1391              		.section	.rodata.publishSinValue.str1.4,"aMS",%progbits,1
+ 1392              		.align	2
+ 1393              	.LC4:
+ 1394 0000 73696E00 		.ascii	"sin\000"
+ 1395              		.section	.rodata.sine_wave,"a",%progbits
+ 1396              		.align	2
+ 1397              		.set	.LANCHOR11,. + 0
+ 1400              	sine_wave:
+ 1401 0000 80       		.byte	-128
+ 1402 0001 83       		.byte	-125
+ 1403 0002 86       		.byte	-122
+ 1404 0003 89       		.byte	-119
+ 1405 0004 8C       		.byte	-116
+ 1406 0005 90       		.byte	-112
+ 1407 0006 93       		.byte	-109
+ 1408 0007 96       		.byte	-106
+ 1409 0008 99       		.byte	-103
+ 1410 0009 9C       		.byte	-100
+ 1411 000a 9F       		.byte	-97
+ 1412 000b A2       		.byte	-94
+ 1413 000c A5       		.byte	-91
+ 1414 000d A8       		.byte	-88
+ 1415 000e AB       		.byte	-85
+ 1416 000f AE       		.byte	-82
+ 1417 0010 B1       		.byte	-79
+ 1418 0011 B3       		.byte	-77
+ 1419 0012 B6       		.byte	-74
+ 1420 0013 B9       		.byte	-71
+ 1421 0014 BC       		.byte	-68
+ 1422 0015 BF       		.byte	-65
+ 1423 0016 C1       		.byte	-63
+ 1424 0017 C4       		.byte	-60
+ 1425 0018 C7       		.byte	-57
+ 1426 0019 C9       		.byte	-55
+ 1427 001a CC       		.byte	-52
+ 1428 001b CE       		.byte	-50
+ 1429 001c D1       		.byte	-47
+ 1430 001d D3       		.byte	-45
+ 1431 001e D5       		.byte	-43
+ 1432 001f D8       		.byte	-40
+ 1433 0020 DA       		.byte	-38
+ 1434 0021 DC       		.byte	-36
+ 1435 0022 DE       		.byte	-34
+ARM GAS  /tmp/cc56gSUN.s 			page 37
+
+
+ 1436 0023 E0       		.byte	-32
+ 1437 0024 E2       		.byte	-30
+ 1438 0025 E4       		.byte	-28
+ 1439 0026 E6       		.byte	-26
+ 1440 0027 E8       		.byte	-24
+ 1441 0028 EA       		.byte	-22
+ 1442 0029 EB       		.byte	-21
+ 1443 002a ED       		.byte	-19
+ 1444 002b EF       		.byte	-17
+ 1445 002c F0       		.byte	-16
+ 1446 002d F1       		.byte	-15
+ 1447 002e F3       		.byte	-13
+ 1448 002f F4       		.byte	-12
+ 1449 0030 F5       		.byte	-11
+ 1450 0031 F6       		.byte	-10
+ 1451 0032 F8       		.byte	-8
+ 1452 0033 F9       		.byte	-7
+ 1453 0034 FA       		.byte	-6
+ 1454 0035 FA       		.byte	-6
+ 1455 0036 FB       		.byte	-5
+ 1456 0037 FC       		.byte	-4
+ 1457 0038 FD       		.byte	-3
+ 1458 0039 FD       		.byte	-3
+ 1459 003a FE       		.byte	-2
+ 1460 003b FE       		.byte	-2
+ 1461 003c FE       		.byte	-2
+ 1462 003d FF       		.byte	-1
+ 1463 003e FF       		.byte	-1
+ 1464 003f FF       		.byte	-1
+ 1465 0040 FF       		.byte	-1
+ 1466 0041 FF       		.byte	-1
+ 1467 0042 FF       		.byte	-1
+ 1468 0043 FF       		.byte	-1
+ 1469 0044 FE       		.byte	-2
+ 1470 0045 FE       		.byte	-2
+ 1471 0046 FE       		.byte	-2
+ 1472 0047 FD       		.byte	-3
+ 1473 0048 FD       		.byte	-3
+ 1474 0049 FC       		.byte	-4
+ 1475 004a FB       		.byte	-5
+ 1476 004b FA       		.byte	-6
+ 1477 004c FA       		.byte	-6
+ 1478 004d F9       		.byte	-7
+ 1479 004e F8       		.byte	-8
+ 1480 004f F6       		.byte	-10
+ 1481 0050 F5       		.byte	-11
+ 1482 0051 F4       		.byte	-12
+ 1483 0052 F3       		.byte	-13
+ 1484 0053 F1       		.byte	-15
+ 1485 0054 F0       		.byte	-16
+ 1486 0055 EF       		.byte	-17
+ 1487 0056 ED       		.byte	-19
+ 1488 0057 EB       		.byte	-21
+ 1489 0058 EA       		.byte	-22
+ 1490 0059 E8       		.byte	-24
+ 1491 005a E6       		.byte	-26
+ 1492 005b E4       		.byte	-28
+ARM GAS  /tmp/cc56gSUN.s 			page 38
+
+
+ 1493 005c E2       		.byte	-30
+ 1494 005d E0       		.byte	-32
+ 1495 005e DE       		.byte	-34
+ 1496 005f DC       		.byte	-36
+ 1497 0060 DA       		.byte	-38
+ 1498 0061 D8       		.byte	-40
+ 1499 0062 D5       		.byte	-43
+ 1500 0063 D3       		.byte	-45
+ 1501 0064 D1       		.byte	-47
+ 1502 0065 CE       		.byte	-50
+ 1503 0066 CC       		.byte	-52
+ 1504 0067 C9       		.byte	-55
+ 1505 0068 C7       		.byte	-57
+ 1506 0069 C4       		.byte	-60
+ 1507 006a C1       		.byte	-63
+ 1508 006b BF       		.byte	-65
+ 1509 006c BC       		.byte	-68
+ 1510 006d B9       		.byte	-71
+ 1511 006e B6       		.byte	-74
+ 1512 006f B3       		.byte	-77
+ 1513 0070 B1       		.byte	-79
+ 1514 0071 AE       		.byte	-82
+ 1515 0072 AB       		.byte	-85
+ 1516 0073 A8       		.byte	-88
+ 1517 0074 A5       		.byte	-91
+ 1518 0075 A2       		.byte	-94
+ 1519 0076 9F       		.byte	-97
+ 1520 0077 9C       		.byte	-100
+ 1521 0078 99       		.byte	-103
+ 1522 0079 96       		.byte	-106
+ 1523 007a 93       		.byte	-109
+ 1524 007b 90       		.byte	-112
+ 1525 007c 8C       		.byte	-116
+ 1526 007d 89       		.byte	-119
+ 1527 007e 86       		.byte	-122
+ 1528 007f 83       		.byte	-125
+ 1529 0080 80       		.byte	-128
+ 1530 0081 7D       		.byte	125
+ 1531 0082 7A       		.byte	122
+ 1532 0083 77       		.byte	119
+ 1533 0084 74       		.byte	116
+ 1534 0085 70       		.byte	112
+ 1535 0086 6D       		.byte	109
+ 1536 0087 6A       		.byte	106
+ 1537 0088 67       		.byte	103
+ 1538 0089 64       		.byte	100
+ 1539 008a 61       		.byte	97
+ 1540 008b 5E       		.byte	94
+ 1541 008c 5B       		.byte	91
+ 1542 008d 58       		.byte	88
+ 1543 008e 55       		.byte	85
+ 1544 008f 52       		.byte	82
+ 1545 0090 4F       		.byte	79
+ 1546 0091 4D       		.byte	77
+ 1547 0092 4A       		.byte	74
+ 1548 0093 47       		.byte	71
+ 1549 0094 44       		.byte	68
+ARM GAS  /tmp/cc56gSUN.s 			page 39
+
+
+ 1550 0095 41       		.byte	65
+ 1551 0096 3F       		.byte	63
+ 1552 0097 3C       		.byte	60
+ 1553 0098 39       		.byte	57
+ 1554 0099 37       		.byte	55
+ 1555 009a 34       		.byte	52
+ 1556 009b 32       		.byte	50
+ 1557 009c 2F       		.byte	47
+ 1558 009d 2D       		.byte	45
+ 1559 009e 2B       		.byte	43
+ 1560 009f 28       		.byte	40
+ 1561 00a0 26       		.byte	38
+ 1562 00a1 24       		.byte	36
+ 1563 00a2 22       		.byte	34
+ 1564 00a3 20       		.byte	32
+ 1565 00a4 1E       		.byte	30
+ 1566 00a5 1C       		.byte	28
+ 1567 00a6 1A       		.byte	26
+ 1568 00a7 18       		.byte	24
+ 1569 00a8 16       		.byte	22
+ 1570 00a9 15       		.byte	21
+ 1571 00aa 13       		.byte	19
+ 1572 00ab 11       		.byte	17
+ 1573 00ac 10       		.byte	16
+ 1574 00ad 0F       		.byte	15
+ 1575 00ae 0D       		.byte	13
+ 1576 00af 0C       		.byte	12
+ 1577 00b0 0B       		.byte	11
+ 1578 00b1 0A       		.byte	10
+ 1579 00b2 08       		.byte	8
+ 1580 00b3 07       		.byte	7
+ 1581 00b4 06       		.byte	6
+ 1582 00b5 06       		.byte	6
+ 1583 00b6 05       		.byte	5
+ 1584 00b7 04       		.byte	4
+ 1585 00b8 03       		.byte	3
+ 1586 00b9 03       		.byte	3
+ 1587 00ba 02       		.byte	2
+ 1588 00bb 02       		.byte	2
+ 1589 00bc 02       		.byte	2
+ 1590 00bd 01       		.byte	1
+ 1591 00be 01       		.byte	1
+ 1592 00bf 01       		.byte	1
+ 1593 00c0 01       		.byte	1
+ 1594 00c1 01       		.byte	1
+ 1595 00c2 01       		.byte	1
+ 1596 00c3 01       		.byte	1
+ 1597 00c4 02       		.byte	2
+ 1598 00c5 02       		.byte	2
+ 1599 00c6 02       		.byte	2
+ 1600 00c7 03       		.byte	3
+ 1601 00c8 03       		.byte	3
+ 1602 00c9 04       		.byte	4
+ 1603 00ca 05       		.byte	5
+ 1604 00cb 06       		.byte	6
+ 1605 00cc 06       		.byte	6
+ 1606 00cd 07       		.byte	7
+ARM GAS  /tmp/cc56gSUN.s 			page 40
+
+
+ 1607 00ce 08       		.byte	8
+ 1608 00cf 0A       		.byte	10
+ 1609 00d0 0B       		.byte	11
+ 1610 00d1 0C       		.byte	12
+ 1611 00d2 0D       		.byte	13
+ 1612 00d3 0F       		.byte	15
+ 1613 00d4 10       		.byte	16
+ 1614 00d5 11       		.byte	17
+ 1615 00d6 13       		.byte	19
+ 1616 00d7 15       		.byte	21
+ 1617 00d8 16       		.byte	22
+ 1618 00d9 18       		.byte	24
+ 1619 00da 1A       		.byte	26
+ 1620 00db 1C       		.byte	28
+ 1621 00dc 1E       		.byte	30
+ 1622 00dd 20       		.byte	32
+ 1623 00de 22       		.byte	34
+ 1624 00df 24       		.byte	36
+ 1625 00e0 26       		.byte	38
+ 1626 00e1 28       		.byte	40
+ 1627 00e2 2B       		.byte	43
+ 1628 00e3 2D       		.byte	45
+ 1629 00e4 2F       		.byte	47
+ 1630 00e5 32       		.byte	50
+ 1631 00e6 34       		.byte	52
+ 1632 00e7 37       		.byte	55
+ 1633 00e8 39       		.byte	57
+ 1634 00e9 3C       		.byte	60
+ 1635 00ea 3F       		.byte	63
+ 1636 00eb 41       		.byte	65
+ 1637 00ec 44       		.byte	68
+ 1638 00ed 47       		.byte	71
+ 1639 00ee 4A       		.byte	74
+ 1640 00ef 4D       		.byte	77
+ 1641 00f0 4F       		.byte	79
+ 1642 00f1 52       		.byte	82
+ 1643 00f2 55       		.byte	85
+ 1644 00f3 58       		.byte	88
+ 1645 00f4 5B       		.byte	91
+ 1646 00f5 5E       		.byte	94
+ 1647 00f6 61       		.byte	97
+ 1648 00f7 64       		.byte	100
+ 1649 00f8 67       		.byte	103
+ 1650 00f9 6A       		.byte	106
+ 1651 00fa 6D       		.byte	109
+ 1652 00fb 70       		.byte	112
+ 1653 00fc 74       		.byte	116
+ 1654 00fd 77       		.byte	119
+ 1655 00fe 7A       		.byte	122
+ 1656 00ff 7D       		.byte	125
+ 1657              		.section	.rodata.uavcanInit.str1.4,"aMS",%progbits,1
+ 1658              		.align	2
+ 1659              	.LC0:
+ 1660 0000 6273315F 		.ascii	"bs1_bs2_sum > bs1\000"
+ 1660      6273325F 
+ 1660      73756D20 
+ 1660      3E206273 
+ARM GAS  /tmp/cc56gSUN.s 			page 41
+
+
+ 1660      3100
+ 1661 0012 0000     		.space	2
+ 1662              	.LC1:
+ 1663 0014 6C696263 		.ascii	"libcanard/drivers/stm32/canard_stm32.h\000"
+ 1663      616E6172 
+ 1663      642F6472 
+ 1663      69766572 
+ 1663      732F7374 
+ 1664 003b 00       		.space	1
+ 1665              	.LC2:
+ 1666 003c 3000     		.ascii	"0\000"
+ 1667              		.text
+ 1668              	.Letext0:
+ 1669              		.file 3 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h
+ 1670              		.file 4 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 1671              		.file 5 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 1672              		.file 6 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 1673              		.file 7 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 1674              		.file 8 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 1675              		.file 9 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdlib.h"
+ 1676              		.file 10 "libcanard/canard.h"
+ 1677              		.file 11 "Drivers/CMSIS/Include/core_cm3.h"
+ 1678              		.file 12 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 1679              		.file 13 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 1680              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 1681              		.file 15 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 1682              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ 1683              		.file 17 "Inc/uavcan.h"
+ 1684              		.file 18 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h"
+ 1685              		.file 19 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_gpio.h"
+ 1686              		.file 20 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/assert.h"
+ 1687              		.file 21 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h"
+ 1688              		.file 22 "<built-in>"
+ARM GAS  /tmp/cc56gSUN.s 			page 42
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 uavcan.c
+     /tmp/cc56gSUN.s:16     .text.shouldAcceptTransfer:0000000000000000 $t
+     /tmp/cc56gSUN.s:23     .text.shouldAcceptTransfer:0000000000000000 shouldAcceptTransfer
+     /tmp/cc56gSUN.s:63     .text.shouldAcceptTransfer:0000000000000020 $d
+     /tmp/cc56gSUN.s:69     .text.uavcanInit:0000000000000000 $t
+     /tmp/cc56gSUN.s:76     .text.uavcanInit:0000000000000000 uavcanInit
+     /tmp/cc56gSUN.s:332    .text.uavcanInit:000000000000011c $d
+     /tmp/cc56gSUN.s:844    .text.onTransferReceived:0000000000000000 onTransferReceived
+     /tmp/cc56gSUN.s:349    .text.sendCanard:0000000000000000 $t
+     /tmp/cc56gSUN.s:356    .text.sendCanard:0000000000000000 sendCanard
+     /tmp/cc56gSUN.s:419    .text.sendCanard:000000000000002c $d
+     /tmp/cc56gSUN.s:424    .text.receiveCanard:0000000000000000 $t
+     /tmp/cc56gSUN.s:431    .text.receiveCanard:0000000000000000 receiveCanard
+     /tmp/cc56gSUN.s:478    .text.receiveCanard:000000000000002c $d
+     /tmp/cc56gSUN.s:483    .text.makeNodeStatusMessage:0000000000000000 $t
+     /tmp/cc56gSUN.s:490    .text.makeNodeStatusMessage:0000000000000000 makeNodeStatusMessage
+     /tmp/cc56gSUN.s:553    .text.makeNodeStatusMessage:0000000000000054 $d
+     /tmp/cc56gSUN.s:558    .text.spinCanard:0000000000000000 $t
+     /tmp/cc56gSUN.s:565    .text.spinCanard:0000000000000000 spinCanard
+     /tmp/cc56gSUN.s:632    .text.spinCanard:0000000000000058 $d
+     /tmp/cc56gSUN.s:642    .text.readUniqueID:0000000000000000 $t
+     /tmp/cc56gSUN.s:649    .text.readUniqueID:0000000000000000 readUniqueID
+     /tmp/cc56gSUN.s:681    .text.makeNodeInfoMessage:0000000000000000 $t
+     /tmp/cc56gSUN.s:688    .text.makeNodeInfoMessage:0000000000000000 makeNodeInfoMessage
+     /tmp/cc56gSUN.s:759    .text.makeNodeInfoMessage:0000000000000060 $d
+     /tmp/cc56gSUN.s:765    .text.getNodeInfoHandleCanard:0000000000000000 $t
+     /tmp/cc56gSUN.s:772    .text.getNodeInfoHandleCanard:0000000000000000 getNodeInfoHandleCanard
+     /tmp/cc56gSUN.s:830    .text.getNodeInfoHandleCanard:0000000000000040 $d
+     /tmp/cc56gSUN.s:837    .text.onTransferReceived:0000000000000000 $t
+     /tmp/cc56gSUN.s:881    .text.publishCircuitStatus:0000000000000000 $t
+     /tmp/cc56gSUN.s:888    .text.publishCircuitStatus:0000000000000000 publishCircuitStatus
+     /tmp/cc56gSUN.s:971    .text.publishCircuitStatus:0000000000000070 $d
+     /tmp/cc56gSUN.s:984    .text.publishSinValue:0000000000000000 $t
+     /tmp/cc56gSUN.s:991    .text.publishSinValue:0000000000000000 publishSinValue
+     /tmp/cc56gSUN.s:1075   .text.publishSinValue:0000000000000078 $d
+     /tmp/cc56gSUN.s:1086   .text.publishBattInfo:0000000000000000 $t
+     /tmp/cc56gSUN.s:1093   .text.publishBattInfo:0000000000000000 publishBattInfo
+     /tmp/cc56gSUN.s:1234   .text.publishBattInfo:00000000000000e8 $d
+     /tmp/cc56gSUN.s:1243   .text.publishCanard:0000000000000000 $t
+     /tmp/cc56gSUN.s:1250   .text.publishCanard:0000000000000000 publishCanard
+     /tmp/cc56gSUN.s:1285   .text.publishCanard:0000000000000020 $d
+     /tmp/cc56gSUN.s:1315   .bss.rc_pwm:0000000000000000 rc_pwm
+     /tmp/cc56gSUN.s:1291   .bss.g_canard:0000000000000000 $d
+     /tmp/cc56gSUN.s:1295   .bss.g_canard:0000000000000000 g_canard
+     /tmp/cc56gSUN.s:1298   .bss.g_canard_memory_pool:0000000000000000 $d
+     /tmp/cc56gSUN.s:1302   .bss.g_canard_memory_pool:0000000000000000 g_canard_memory_pool
+     /tmp/cc56gSUN.s:1305   .bss.publish_time.8084:0000000000000000 $d
+     /tmp/cc56gSUN.s:1309   .bss.publish_time.8084:0000000000000000 publish_time.8084
+     /tmp/cc56gSUN.s:1312   .bss.rc_pwm:0000000000000000 $d
+     /tmp/cc56gSUN.s:1318   .bss.spin_time.8076:0000000000000000 $d
+     /tmp/cc56gSUN.s:1322   .bss.spin_time.8076:0000000000000000 spin_time.8076
+     /tmp/cc56gSUN.s:1325   .bss.step.8110:0000000000000000 $d
+     /tmp/cc56gSUN.s:1329   .bss.step.8110:0000000000000000 step.8110
+     /tmp/cc56gSUN.s:1332   .bss.step.8122:0000000000000000 $d
+     /tmp/cc56gSUN.s:1336   .bss.step.8122:0000000000000000 step.8122
+     /tmp/cc56gSUN.s:1342   .bss.transfer_id.8078:0000000000000000 transfer_id.8078
+ARM GAS  /tmp/cc56gSUN.s 			page 43
+
+
+     /tmp/cc56gSUN.s:1343   .bss.transfer_id.8078:0000000000000000 $d
+     /tmp/cc56gSUN.s:1348   .bss.transfer_id.8117:0000000000000000 transfer_id.8117
+     /tmp/cc56gSUN.s:1349   .bss.transfer_id.8117:0000000000000000 $d
+     /tmp/cc56gSUN.s:1354   .bss.transfer_id.8125:0000000000000000 transfer_id.8125
+     /tmp/cc56gSUN.s:1355   .bss.transfer_id.8125:0000000000000000 $d
+     /tmp/cc56gSUN.s:1360   .data.circuit_flage.8116:0000000000000000 circuit_flage.8116
+     /tmp/cc56gSUN.s:1363   .data.circuit_id.8113:0000000000000000 $d
+     /tmp/cc56gSUN.s:1367   .data.circuit_id.8113:0000000000000000 circuit_id.8113
+     /tmp/cc56gSUN.s:1370   .data.circuit_v.8114:0000000000000000 $d
+     /tmp/cc56gSUN.s:1374   .data.circuit_v.8114:0000000000000000 circuit_v.8114
+     /tmp/cc56gSUN.s:1377   .rodata.__func__.5968:0000000000000000 $d
+     /tmp/cc56gSUN.s:1381   .rodata.__func__.5968:0000000000000000 __func__.5968
+     /tmp/cc56gSUN.s:1384   .rodata.makeNodeInfoMessage.str1.4:0000000000000000 $d
+     /tmp/cc56gSUN.s:1388   .rodata.publishBattInfo.str1.4:0000000000000000 $d
+     /tmp/cc56gSUN.s:1392   .rodata.publishSinValue.str1.4:0000000000000000 $d
+     /tmp/cc56gSUN.s:1396   .rodata.sine_wave:0000000000000000 $d
+     /tmp/cc56gSUN.s:1400   .rodata.sine_wave:0000000000000000 sine_wave
+     /tmp/cc56gSUN.s:1658   .rodata.uavcanInit.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_RCC_GetPCLK1Freq
+__assert_func
+canardSTM32Init
+canardInit
+canardSetLocalNodeID
+canardPeekTxQueue
+canardSTM32Transmit
+canardPopTxQueue
+canardSTM32Receive
+HAL_GetTick
+canardHandleRxFrame
+canardEncodeScalar
+HAL_GPIO_TogglePin
+canardBroadcast
+memset
+canardRequestOrRespond
+__aeabi_ui2f
+canardConvertNativeFloatToFloat16

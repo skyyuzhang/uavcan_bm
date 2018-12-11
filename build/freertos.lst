@@ -1,0 +1,413 @@
+ARM GAS  /tmp/cck1xmVc.s 			page 1
+
+
+   1              		.cpu cortex-m3
+   2              		.eabi_attribute 20, 1
+   3              		.eabi_attribute 21, 1
+   4              		.eabi_attribute 23, 3
+   5              		.eabi_attribute 24, 1
+   6              		.eabi_attribute 25, 1
+   7              		.eabi_attribute 26, 1
+   8              		.eabi_attribute 30, 1
+   9              		.eabi_attribute 34, 1
+  10              		.eabi_attribute 18, 4
+  11              		.file	"freertos.c"
+  12              		.text
+  13              	.Ltext0:
+  14              		.cfi_sections	.debug_frame
+  15              		.section	.text.StartTask01,"ax",%progbits
+  16              		.align	1
+  17              		.global	StartTask01
+  18              		.syntax unified
+  19              		.thumb
+  20              		.thumb_func
+  21              		.fpu softvfp
+  23              	StartTask01:
+  24              	.LFB72:
+  25              		.file 1 "Src/freertos.c"
+   1:Src/freertos.c **** /* USER CODE BEGIN Header */
+   2:Src/freertos.c **** /**
+   3:Src/freertos.c ****   ******************************************************************************
+   4:Src/freertos.c ****   * File Name          : freertos.c
+   5:Src/freertos.c ****   * Description        : Code for freertos applications
+   6:Src/freertos.c ****   ******************************************************************************
+   7:Src/freertos.c ****   * This notice applies to any and all portions of this file
+   8:Src/freertos.c ****   * that are not between comment pairs USER CODE BEGIN and
+   9:Src/freertos.c ****   * USER CODE END. Other portions of this file, whether 
+  10:Src/freertos.c ****   * inserted by the user or by software development tools
+  11:Src/freertos.c ****   * are owned by their respective copyright owners.
+  12:Src/freertos.c ****   *
+  13:Src/freertos.c ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  14:Src/freertos.c ****   * All rights reserved.
+  15:Src/freertos.c ****   *
+  16:Src/freertos.c ****   * Redistribution and use in source and binary forms, with or without 
+  17:Src/freertos.c ****   * modification, are permitted, provided that the following conditions are met:
+  18:Src/freertos.c ****   *
+  19:Src/freertos.c ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:Src/freertos.c ****   *    this list of conditions and the following disclaimer.
+  21:Src/freertos.c ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  22:Src/freertos.c ****   *    this list of conditions and the following disclaimer in the documentation
+  23:Src/freertos.c ****   *    and/or other materials provided with the distribution.
+  24:Src/freertos.c ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:Src/freertos.c ****   *    contributors to this software may be used to endorse or promote products 
+  26:Src/freertos.c ****   *    derived from this software without specific written permission.
+  27:Src/freertos.c ****   * 4. This software, including modifications and/or derivative works of this 
+  28:Src/freertos.c ****   *    software, must execute solely and exclusively on microcontroller or
+  29:Src/freertos.c ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  30:Src/freertos.c ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:Src/freertos.c ****   *    this license is void and will automatically terminate your rights under 
+  32:Src/freertos.c ****   *    this license. 
+  33:Src/freertos.c ****   *
+ARM GAS  /tmp/cck1xmVc.s 			page 2
+
+
+  34:Src/freertos.c ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:Src/freertos.c ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:Src/freertos.c ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:Src/freertos.c ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:Src/freertos.c ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:Src/freertos.c ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:Src/freertos.c ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:Src/freertos.c ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:Src/freertos.c ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:Src/freertos.c ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:Src/freertos.c ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:Src/freertos.c ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:Src/freertos.c ****   *
+  47:Src/freertos.c ****   ******************************************************************************
+  48:Src/freertos.c ****   */
+  49:Src/freertos.c **** /* USER CODE END Header */
+  50:Src/freertos.c **** 
+  51:Src/freertos.c **** /* Includes ------------------------------------------------------------------*/
+  52:Src/freertos.c **** #include "FreeRTOS.h"
+  53:Src/freertos.c **** #include "task.h"
+  54:Src/freertos.c **** #include "main.h"
+  55:Src/freertos.c **** #include "cmsis_os.h"
+  56:Src/freertos.c **** #include "stm32f1xx_hal.h"
+  57:Src/freertos.c **** extern UART_HandleTypeDef huart1;
+  58:Src/freertos.c **** 
+  59:Src/freertos.c **** osThreadId Task01Handle;
+  60:Src/freertos.c **** osThreadId Task02Handle;
+  61:Src/freertos.c **** osThreadId Task03Handle;
+  62:Src/freertos.c **** osThreadId Task04Handle;
+  63:Src/freertos.c **** 
+  64:Src/freertos.c **** 
+  65:Src/freertos.c **** void StartTask01(void const * argument);
+  66:Src/freertos.c **** void StartTask02(void const * argument);
+  67:Src/freertos.c **** 
+  68:Src/freertos.c **** 
+  69:Src/freertos.c **** void MX_FREERTOS_Init(void); 
+  70:Src/freertos.c **** 
+  71:Src/freertos.c **** void MX_FREERTOS_Init(void) 
+  72:Src/freertos.c **** {
+  73:Src/freertos.c **** 
+  74:Src/freertos.c ****  
+  75:Src/freertos.c ****   osThreadDef(Task01, StartTask01, osPriorityNormal, 0, 2048);
+  76:Src/freertos.c ****   Task01Handle = osThreadCreate(osThread(Task01), NULL);
+  77:Src/freertos.c ****   osThreadDef(Task02, StartTask02, osPriorityNormal, 0, 1024);
+  78:Src/freertos.c ****   Task02Handle = osThreadCreate(osThread(Task02), NULL);
+  79:Src/freertos.c **** 
+  80:Src/freertos.c ****  
+  81:Src/freertos.c **** }
+  82:Src/freertos.c **** 
+  83:Src/freertos.c **** /* USER CODE BEGIN Header_StartTask01 */
+  84:Src/freertos.c **** /**
+  85:Src/freertos.c ****   * @brief  Function implementing the Task01 thread.
+  86:Src/freertos.c ****   * @param  argument: Not used 
+  87:Src/freertos.c ****   * @retval None
+  88:Src/freertos.c ****   */
+  89:Src/freertos.c **** /* USER CODE END Header_StartTask01 */
+  90:Src/freertos.c **** void StartTask01(void const * argument)
+ARM GAS  /tmp/cck1xmVc.s 			page 3
+
+
+  91:Src/freertos.c **** {
+  26              		.loc 1 91 0
+  27              		.cfi_startproc
+  28              		@ Volatile: function does not return.
+  29              		@ args = 0, pretend = 0, frame = 0
+  30              		@ frame_needed = 0, uses_anonymous_args = 0
+  31              	.LVL0:
+  32 0000 08B5     		push	{r3, lr}
+  33              	.LCFI0:
+  34              		.cfi_def_cfa_offset 8
+  35              		.cfi_offset 3, -8
+  36              		.cfi_offset 14, -4
+  37              	.LVL1:
+  38              	.L2:
+  39              	.LBB2:
+  92:Src/freertos.c **** 
+  93:Src/freertos.c ****   /* USER CODE BEGIN StartTask01 */
+  94:Src/freertos.c ****   /* Infinite loop */
+  95:Src/freertos.c ****   while(1)
+  96:Src/freertos.c ****   {
+  97:Src/freertos.c ****     sendCanard();
+  40              		.loc 1 97 0 discriminator 1
+  41 0002 FFF7FEFF 		bl	sendCanard
+  42              	.LVL2:
+  98:Src/freertos.c ****     receiveCanard();
+  43              		.loc 1 98 0 discriminator 1
+  44 0006 FFF7FEFF 		bl	receiveCanard
+  45              	.LVL3:
+  99:Src/freertos.c ****     spinCanard();
+  46              		.loc 1 99 0 discriminator 1
+  47 000a FFF7FEFF 		bl	spinCanard
+  48              	.LVL4:
+ 100:Src/freertos.c ****     publishCanard();
+  49              		.loc 1 100 0 discriminator 1
+  50 000e FFF7FEFF 		bl	publishCanard
+  51              	.LVL5:
+  52 0012 F6E7     		b	.L2
+  53              	.LBE2:
+  54              		.cfi_endproc
+  55              	.LFE72:
+  57              		.section	.text.StartTask02,"ax",%progbits
+  58              		.align	1
+  59              		.global	StartTask02
+  60              		.syntax unified
+  61              		.thumb
+  62              		.thumb_func
+  63              		.fpu softvfp
+  65              	StartTask02:
+  66              	.LFB73:
+ 101:Src/freertos.c ****     //HAL_GPIO_TogglePin(GPIOB,GPIO_PIN_12);
+ 102:Src/freertos.c ****    // HAL_UART_Transmit(&huart1,"go",2,0xffff);
+ 103:Src/freertos.c ****     //showRcpwmonUart();
+ 104:Src/freertos.c ****     //osDelay(100);
+ 105:Src/freertos.c ****   }
+ 106:Src/freertos.c ****   /* USER CODE END StartTask01 */
+ 107:Src/freertos.c **** }
+ 108:Src/freertos.c **** 
+ARM GAS  /tmp/cck1xmVc.s 			page 4
+
+
+ 109:Src/freertos.c **** /* USER CODE BEGIN Header_StartTask02 */
+ 110:Src/freertos.c **** /**
+ 111:Src/freertos.c **** * @brief Function implementing the Task02 thread.
+ 112:Src/freertos.c **** * @param argument: Not used
+ 113:Src/freertos.c **** * @retval None
+ 114:Src/freertos.c **** */
+ 115:Src/freertos.c **** /* USER CODE END Header_StartTask02 */
+ 116:Src/freertos.c **** void StartTask02(void const * argument)
+ 117:Src/freertos.c **** {
+  67              		.loc 1 117 0
+  68              		.cfi_startproc
+  69              		@ args = 0, pretend = 0, frame = 8
+  70              		@ frame_needed = 0, uses_anonymous_args = 0
+  71              	.LVL6:
+  72 0000 00B5     		push	{lr}
+  73              	.LCFI1:
+  74              		.cfi_def_cfa_offset 4
+  75              		.cfi_offset 14, -4
+  76 0002 83B0     		sub	sp, sp, #12
+  77              	.LCFI2:
+  78              		.cfi_def_cfa_offset 16
+  79              	.LVL7:
+  80              	.L5:
+  81              	.LBB3:
+ 118:Src/freertos.c ****   while(1)
+ 119:Src/freertos.c ****   {
+ 120:Src/freertos.c ****     uint8_t num[5];
+ 121:Src/freertos.c ****     uint8_t num1=12;
+  82              		.loc 1 121 0 discriminator 1
+  83 0004 0C23     		movs	r3, #12
+  84 0006 8DF80730 		strb	r3, [sp, #7]
+  85              	.LVL8:
+ 122:Src/freertos.c ****     uint16_t value[10];
+ 123:Src/freertos.c ****     float batteyVolt=15.7;
+ 124:Src/freertos.c ****     value[1]=getAdcVaule(1);
+  86              		.loc 1 124 0 discriminator 1
+  87 000a 0120     		movs	r0, #1
+  88 000c FFF7FEFF 		bl	getAdcVaule
+  89              	.LVL9:
+ 125:Src/freertos.c ****     //batteyVolt=value[1]/4069*3.3;
+ 126:Src/freertos.c ****     num1=batteyVolt;
+  90              		.loc 1 126 0 discriminator 1
+  91 0010 02A9     		add	r1, sp, #8
+  92 0012 0F23     		movs	r3, #15
+  93 0014 01F8013D 		strb	r3, [r1, #-1]!
+ 127:Src/freertos.c ****     //gcvt(batteyVolt,num,10);
+ 128:Src/freertos.c ****    // itoa(value[1],num,10);
+ 129:Src/freertos.c ****    // HAL_UART_Transmit(&huart1,num,5,0xffff);
+ 130:Src/freertos.c ****    // HAL_UART_Transmit(&huart1,"-----",5,0xffff);
+ 131:Src/freertos.c ****   //  itoa(value[2],num,10);
+ 132:Src/freertos.c ****    // HAL_UART_Transmit(&huart1,num,5,0xffff);
+ 133:Src/freertos.c ****    // HAL_UART_Transmit(&huart1,"-----",5,0xffff);
+ 134:Src/freertos.c ****     HAL_UART_Transmit(&huart1,&num1,1,0xffff);
+  94              		.loc 1 134 0 discriminator 1
+  95 0018 4FF6FF73 		movw	r3, #65535
+  96 001c 0122     		movs	r2, #1
+  97 001e 0348     		ldr	r0, .L7
+ARM GAS  /tmp/cck1xmVc.s 			page 5
+
+
+  98 0020 FFF7FEFF 		bl	HAL_UART_Transmit
+  99              	.LVL10:
+ 135:Src/freertos.c ****     osDelay(100);
+ 100              		.loc 1 135 0 discriminator 1
+ 101 0024 6420     		movs	r0, #100
+ 102 0026 FFF7FEFF 		bl	osDelay
+ 103              	.LVL11:
+ 104 002a EBE7     		b	.L5
+ 105              	.L8:
+ 106              		.align	2
+ 107              	.L7:
+ 108 002c 00000000 		.word	huart1
+ 109              	.LBE3:
+ 110              		.cfi_endproc
+ 111              	.LFE73:
+ 113              		.section	.text.MX_FREERTOS_Init,"ax",%progbits
+ 114              		.align	1
+ 115              		.global	MX_FREERTOS_Init
+ 116              		.syntax unified
+ 117              		.thumb
+ 118              		.thumb_func
+ 119              		.fpu softvfp
+ 121              	MX_FREERTOS_Init:
+ 122              	.LFB71:
+  72:Src/freertos.c **** 
+ 123              		.loc 1 72 0
+ 124              		.cfi_startproc
+ 125              		@ args = 0, pretend = 0, frame = 40
+ 126              		@ frame_needed = 0, uses_anonymous_args = 0
+ 127 0000 70B5     		push	{r4, r5, r6, lr}
+ 128              	.LCFI3:
+ 129              		.cfi_def_cfa_offset 16
+ 130              		.cfi_offset 4, -16
+ 131              		.cfi_offset 5, -12
+ 132              		.cfi_offset 6, -8
+ 133              		.cfi_offset 14, -4
+ 134 0002 8AB0     		sub	sp, sp, #40
+ 135              	.LCFI4:
+ 136              		.cfi_def_cfa_offset 56
+  75:Src/freertos.c ****   Task01Handle = osThreadCreate(osThread(Task01), NULL);
+ 137              		.loc 1 75 0
+ 138 0004 0D4C     		ldr	r4, .L11
+ 139 0006 05AD     		add	r5, sp, #20
+ 140 0008 2646     		mov	r6, r4
+ 141 000a 0FCE     		ldmia	r6!, {r0, r1, r2, r3}
+ 142 000c 0FC5     		stmia	r5!, {r0, r1, r2, r3}
+ 143 000e 3368     		ldr	r3, [r6]
+ 144 0010 2B60     		str	r3, [r5]
+  76:Src/freertos.c ****   osThreadDef(Task02, StartTask02, osPriorityNormal, 0, 1024);
+ 145              		.loc 1 76 0
+ 146 0012 0021     		movs	r1, #0
+ 147 0014 05A8     		add	r0, sp, #20
+ 148 0016 FFF7FEFF 		bl	osThreadCreate
+ 149              	.LVL12:
+ 150 001a 094B     		ldr	r3, .L11+4
+ 151 001c 1860     		str	r0, [r3]
+  77:Src/freertos.c ****   Task02Handle = osThreadCreate(osThread(Task02), NULL);
+ARM GAS  /tmp/cck1xmVc.s 			page 6
+
+
+ 152              		.loc 1 77 0
+ 153 001e 6D46     		mov	r5, sp
+ 154 0020 1434     		adds	r4, r4, #20
+ 155 0022 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 156 0024 0FC5     		stmia	r5!, {r0, r1, r2, r3}
+ 157 0026 2368     		ldr	r3, [r4]
+ 158 0028 2B60     		str	r3, [r5]
+  78:Src/freertos.c **** 
+ 159              		.loc 1 78 0
+ 160 002a 0021     		movs	r1, #0
+ 161 002c 6846     		mov	r0, sp
+ 162 002e FFF7FEFF 		bl	osThreadCreate
+ 163              	.LVL13:
+ 164 0032 044B     		ldr	r3, .L11+8
+ 165 0034 1860     		str	r0, [r3]
+  81:Src/freertos.c **** 
+ 166              		.loc 1 81 0
+ 167 0036 0AB0     		add	sp, sp, #40
+ 168              	.LCFI5:
+ 169              		.cfi_def_cfa_offset 16
+ 170              		@ sp needed
+ 171 0038 70BD     		pop	{r4, r5, r6, pc}
+ 172              	.L12:
+ 173 003a 00BF     		.align	2
+ 174              	.L11:
+ 175 003c 00000000 		.word	.LANCHOR0
+ 176 0040 00000000 		.word	Task01Handle
+ 177 0044 00000000 		.word	Task02Handle
+ 178              		.cfi_endproc
+ 179              	.LFE71:
+ 181              		.comm	Task04Handle,4,4
+ 182              		.comm	Task03Handle,4,4
+ 183              		.comm	Task02Handle,4,4
+ 184              		.comm	Task01Handle,4,4
+ 185              		.section	.rodata
+ 186              		.align	2
+ 187              		.set	.LANCHOR0,. + 0
+ 188              	.LC4:
+ 189 0000 08000000 		.word	.LC0
+ 190 0004 00000000 		.word	StartTask01
+ 191 0008 0000     		.short	0
+ 192 000a 0000     		.space	2
+ 193 000c 00000000 		.word	0
+ 194 0010 00080000 		.word	2048
+ 195              	.LC5:
+ 196 0014 00000000 		.word	.LC2
+ 197 0018 00000000 		.word	StartTask02
+ 198 001c 0000     		.short	0
+ 199 001e 0000     		.space	2
+ 200 0020 00000000 		.word	0
+ 201 0024 00040000 		.word	1024
+ 202              		.section	.rodata.str1.4,"aMS",%progbits,1
+ 203              		.align	2
+ 204              	.LC2:
+ 205 0000 5461736B 		.ascii	"Task02\000"
+ 205      303200
+ 206 0007 00       		.space	1
+ARM GAS  /tmp/cck1xmVc.s 			page 7
+
+
+ 207              	.LC0:
+ 208 0008 5461736B 		.ascii	"Task01\000"
+ 208      303100
+ 209              		.text
+ 210              	.Letext0:
+ 211              		.file 2 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/_default_types.h
+ 212              		.file 3 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h"
+ 213              		.file 4 "Middlewares/Third_Party/FreeRTOS/Source/include/task.h"
+ 214              		.file 5 "Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 215              		.file 6 "Inc/FreeRTOSConfig.h"
+ 216              		.file 7 "Drivers/CMSIS/Include/core_cm3.h"
+ 217              		.file 8 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/system_stm32f1xx.h"
+ 218              		.file 9 "Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h"
+ 219              		.file 10 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/lock.h"
+ 220              		.file 11 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_types.h"
+ 221              		.file 12 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h"
+ 222              		.file 13 "/usr/bin/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/reent.h"
+ 223              		.file 14 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_def.h"
+ 224              		.file 15 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_dma.h"
+ 225              		.file 16 "Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h"
+ARM GAS  /tmp/cck1xmVc.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 freertos.c
+     /tmp/cck1xmVc.s:16     .text.StartTask01:0000000000000000 $t
+     /tmp/cck1xmVc.s:23     .text.StartTask01:0000000000000000 StartTask01
+     /tmp/cck1xmVc.s:58     .text.StartTask02:0000000000000000 $t
+     /tmp/cck1xmVc.s:65     .text.StartTask02:0000000000000000 StartTask02
+     /tmp/cck1xmVc.s:108    .text.StartTask02:000000000000002c $d
+     /tmp/cck1xmVc.s:114    .text.MX_FREERTOS_Init:0000000000000000 $t
+     /tmp/cck1xmVc.s:121    .text.MX_FREERTOS_Init:0000000000000000 MX_FREERTOS_Init
+     /tmp/cck1xmVc.s:175    .text.MX_FREERTOS_Init:000000000000003c $d
+                            *COM*:0000000000000004 Task01Handle
+                            *COM*:0000000000000004 Task02Handle
+                            *COM*:0000000000000004 Task04Handle
+                            *COM*:0000000000000004 Task03Handle
+     /tmp/cck1xmVc.s:186    .rodata:0000000000000000 $d
+     /tmp/cck1xmVc.s:203    .rodata.str1.4:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+sendCanard
+receiveCanard
+spinCanard
+publishCanard
+getAdcVaule
+HAL_UART_Transmit
+osDelay
+huart1
+osThreadCreate
